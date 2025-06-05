@@ -1,0 +1,75 @@
+<nav class="navbar navbar-expand-lg custom-navbar shadow">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Task Management</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <ng-container *ngIf="loggedIn">
+          <ng-container *ngIf="userRole === 'Admin'">
+            <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/users">Users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/tasks">Tasks</a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/manager">Manager</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/usertasks">User Tasks</a>
+            </li>
+          </ng-container>
+          <ng-container *ngIf="userRole === 'Manager'">
+            <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/usertasks">User Tasks</a>
+            </li>
+          </ng-container>
+          <ng-container *ngIf="userRole === 'User'">
+            <li class="nav-item">
+              <a class="nav-link custom-link" routerLink="/my-tasks">MYTasks</a>
+            </li>
+            
+          </ng-container>
+          
+          <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <i class="bi bi-person-circle fs-5 me-1"></i> 
+</a>
+
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+      <li><a class="dropdown-item" routerLink="/profile">Change Profile</a></li>
+      <li><a class="dropdown-item" routerLink="/change-password">Change Password</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+    </ul>
+  </li>
+
+        </ng-container>
+        
+        <ng-container *ngIf="!loggedIn">
+          <li class="nav-item">
+            <a class="nav-link custom-link" routerLink="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link custom-link" routerLink="/register">Register</a>
+          </li>
+          
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <router-outlet></router-outlet>
+</div>

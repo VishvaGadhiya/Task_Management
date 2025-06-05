@@ -1,0 +1,71 @@
+body {
+  background-color: #f8f9fa;
+  background-image: linear-gradient(to bottom, #f1f5f9, #ffffff);
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: none;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  padding: 1.5rem;
+}
+
+.card-header h3 {
+  font-size: 1.75rem;
+}
+
+.card-header p {
+  opacity: 0.9;
+  font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  border: none;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.alert {
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.form-label {
+  color: #4b5563;
+}
+
+.form-text {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Add some subtle animation to form elements */
+input, select {
+  transition: all 0.2s ease-in-out;
+}
+
+input:hover, select:hover {
+  border-color: #a5b4fc;
+}

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.16" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskManagement.EntityFrameworkCore\TaskManagement.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Task_Management.Interfaces\Task_Management.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

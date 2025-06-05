@@ -1,0 +1,9 @@
+# Ignore common folders
+.vs/
+bin/
+obj/
+node_modules/
+*.log
+*.user
+*.suo
+*.env

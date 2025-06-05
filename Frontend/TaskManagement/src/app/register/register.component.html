@@ -1,0 +1,101 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h3 class="mb-0 fw-bold">Create Your Account</h3>
+          <p class="mb-0">Join our community today</p>
+        </div>
+        <div class="card-body p-4">
+          <form (ngSubmit)="onSubmit()" #registerForm="ngForm" novalidate>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="userName" class="form-label fw-semibold">Username</label>
+                <input type="text" class="form-control" id="userName"
+                       [(ngModel)]="model.userName" name="userName" required
+                       placeholder="Enter your username"
+                       [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['userName']?.valid }">
+                <div class="invalid-feedback">Username is required.</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control" id="email"
+                       [(ngModel)]="model.email" name="email" required
+                       placeholder="you@example.com"
+                       [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['email']?.valid }">
+                <div class="invalid-feedback">Valid email is required.</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Full Name</label>
+              <input type="text" class="form-control" id="name"
+                     [(ngModel)]="model.name" name="name" required
+                     placeholder="e.g. John Smith"
+                     [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['name']?.valid }">
+              <div class="invalid-feedback">Full name is required.</div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="gender" class="form-label fw-semibold">Gender</label>
+                <select class="form-select" id="gender" [(ngModel)]="model.gender" name="gender" required
+                        [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['gender']?.valid }">
+                  <option value="" disabled>Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback">Please select a gender.</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="joinDate" class="form-label fw-semibold">Join Date</label>
+                <input type="date" class="form-control" id="joinDate"
+                       [(ngModel)]="model.joinDate" name="joinDate" required
+                       [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['joinDate']?.valid }">
+                <div class="invalid-feedback">Join date is required.</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="password" class="form-label fw-semibold">Password</label>
+                <input type="password" class="form-control" id="password"
+                       [(ngModel)]="model.password" name="password" required minlength="8"
+                       placeholder="Min 8 characters"
+                       [ngClass]="{ 'is-invalid': registerForm.submitted && !registerForm.controls['password']?.valid }">
+                <div class="invalid-feedback">Password must be at least 8 characters long.</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="confirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword"
+                       [(ngModel)]="model.confirmPassword" name="confirmPassword" required
+                       placeholder="Repeat password"
+                       [ngClass]="{
+                         'is-invalid': registerForm.submitted && (model.confirmPassword !== model.password || !registerForm.controls['confirmPassword']?.valid)
+                       }">
+                <div class="invalid-feedback">Passwords must match.</div>
+              </div>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary btn-lg fw-bold py-2">
+                Register Now
+              </button>
+            </div>
+
+            <div class="text-center mt-3">
+              <p class="mb-0">Already have an account? <a href="#" class="text-primary">Sign in</a></p>
+            </div>
+          </form>
+
+         
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

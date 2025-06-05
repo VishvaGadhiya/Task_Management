@@ -1,0 +1,163 @@
+<div class="container mt-4">
+  <h2>User Task Assignments</h2>
+<div class="row align-items-end mb-4 g-3">
+  <!-- Search Input with Button -->
+  <div class="col-md-5">
+    <label for="search" class="form-label"></label>
+    <div class="input-group">
+      <input
+        id="search"
+        type="search"
+        class="form-control"
+        placeholder="Type to search..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        aria-label="Search user tasks"
+      />
+      <button
+        class="btn btn-outline-primary"
+        type="button"
+        (click)="onSearch()"
+        aria-label="Search"
+      >
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Items Per Page Dropdown -->
+  <div class="col-md-3">
+    <label for="itemsPerPage" class="form-label"></label>
+    <select
+      id="itemsPerPage"
+      class="form-select"
+      [(ngModel)]="itemsPerPage"
+      (change)="onItemsPerPageChange()"
+    >
+      <option value="5">5 per page</option>
+      <option value="10">10 per page</option>
+      <option value="20">20 per page</option>
+      <option value="50">50 per page</option>
+    </select>
+  </div>
+
+  <!-- Add Assignment Button -->
+  <div class="col-md-4 text-end">
+    <button class="btn btn-success" (click)="addUserTask()">
+      <i class="bi bi-plus-circle me-1"></i> Add Assignment
+    </button>
+  </div>
+</div>
+
+
+  <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th (click)="onSort('userId')" style="cursor: pointer;">
+            User {{ getSortIcon('userId') }}
+          </th>
+          <th (click)="onSort('taskId')" style="cursor: pointer;">
+            Task {{ getSortIcon('taskId') }}
+          </th>
+              <th>Status</th> <!-- 👈 Added column -->
+
+          <th style="width: 160px;">Actions</th>
+        </tr>
+      </thead>
+    
+    <tbody>
+      <tr *ngFor="let ut of userTasks">
+        <td>{{ getUserName(ut.userId) }}</td>
+        <td>{{ getTaskTitle(ut.taskId) }}</td>
+<td>
+  <span [class.badge]="true"
+        [class.bg-primary]="getTaskStatus(ut.taskId) === 'ToDo'"
+        [class.bg-warning]="getTaskStatus(ut.taskId) === 'InProgress'"
+        [class.bg-success]="getTaskStatus(ut.taskId) === 'Completed'">
+    {{ getReadableStatus(getTaskStatus(ut.taskId)) }}
+  </span>
+</td>
+
+
+        <td>
+          <button class="btn btn-primary btn-sm me-2" (click)="openEditModal(ut)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="openDeleteModal(ut)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div
+  *ngIf="selectedUserTask"
+  class="modal d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form (ngSubmit)="saveUserTask()">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ selectedUserTask.id ? 'Edit Assignment' : 'Add Assignment' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">User</label>
+            <select class="form-select" [(ngModel)]="selectedUserTask.userId" name="userId" required>
+              <option value="" disabled>Select a user</option>
+<option *ngFor="let user of activeUsers" [value]="user.id">{{ user.name }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Task</label>
+            <select class="form-select" [(ngModel)]="selectedUserTask.taskId" name="taskId" required>
+  <option value="" disabled>Select a task</option>
+  <option *ngFor="let task of getAvailableTasksForUser(selectedUserTask.userId)" [value]="task.id">
+    {{ task.title }}
+  </option>
+</select>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            {{ selectedUserTask.id ? 'Update' : 'Add' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div
+  *ngIf="deletingUserTask"
+  class="modal d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this assignment?</p>
+        <p>
+          <strong>User:</strong> {{ getUserName(deletingUserTask.userId) }}<br />
+          <strong>Task:</strong> {{ getTaskTitle(deletingUserTask.taskId) }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

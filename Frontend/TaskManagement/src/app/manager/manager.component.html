@@ -1,0 +1,291 @@
+<div class="container mt-4">
+  <h2>Manager List</h2>
+  <div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-success" (click)="addManager()">
+    <i class="bi bi-plus-circle me-1"></i> Add Manager
+  </button>
+</div>
+
+<div class="row g-3 align-items-end mb-4">
+
+  <div class="col-md-4">
+    <div class="input-group">
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Search all fields..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        aria-label="Search managers"
+      />
+      <button
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="onSearch()"
+        aria-label="Search"
+      >
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Gender Filter -->
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="genderFilter"
+      (change)="onFilter()"
+      aria-label="Gender filter"
+    >
+      <option value="">All Genders</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <!-- Status Filter -->
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="statusFilter"
+      (change)="onFilter()"
+      aria-label="Status filter"
+    >
+      <option value="">All Statuses</option>
+      <option value="Active">Active</option>
+      <option value="De-Active">De-Active</option>
+    </select>
+  </div>
+
+  <!-- Items Per Page -->
+  <div class="col-md-2">
+    <select
+      class="form-select"
+      [(ngModel)]="itemsPerPage"
+      (change)="onItemsPerPageChange()"
+      aria-label="Items per page"
+    >
+      <option value="5">5 per page</option>
+      <option value="10">10 per page</option>
+      <option value="20">20 per page</option>
+      <option value="50">50 per page</option>
+    </select>
+  </div>
+
+</div>
+
+  <!-- Loading and Error Messages -->
+  <div *ngIf="isLoading" class="alert alert-info text-center">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    Loading managers...
+  </div>
+  
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+    <button type="button" class="btn-close float-end" (click)="errorMessage = null"></button>
+  </div>
+
+  <!-- Managers Table -->
+  <div class="table-responsive">
+    <table *ngIf="!isLoading" class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th (click)="onSort('name')" style="cursor: pointer;">
+            Name {{ getSortIcon('name') }}
+          </th>
+          <th (click)="onSort('email')" style="cursor: pointer;">
+            Email {{ getSortIcon('email') }}
+          </th>
+          <th (click)="onSort('gender')" style="cursor: pointer;">
+            Gender {{ getSortIcon('gender') }}
+          </th>
+          <th (click)="onSort('joinDate')" style="cursor: pointer;">
+            Join Date {{ getSortIcon('joinDate') }}
+          </th>
+          <th (click)="onSort('status')" style="cursor: pointer;">
+            Status {{ getSortIcon('status') }}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let manager of managers">
+          <td>{{ manager.name }}</td>
+          <td>{{ manager.email }}</td>
+          <td>{{ manager.gender }}</td>
+          <td>{{ manager.joinDate | date: 'yyyy-MM-dd' }}</td>
+          <td>
+            <span [class.badge]="true" 
+                  [class.bg-success]="manager.status === 'Active'"
+                  [class.bg-warning]="manager.status === 'De-Active'">
+              {{ manager.status }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm me-1" (click)="openEditModal(manager)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="openDeleteModal(manager)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Managers Found Message -->
+  <div *ngIf="!isLoading && managers.length === 0" class="alert alert-warning text-center">
+    No managers found matching your criteria.
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="row mt-3">
+    <div class="col-md-6">
+      <div class="text-muted">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+        {{ getShowingTo() }} of {{ totalItems }} managers
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <nav aria-label="Page navigation" class="float-end">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(1)" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <li *ngFor="let page of getPages()" class="page-item" [class.active]="page === currentPage">
+            <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(totalPages)" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Manager Modal -->
+<div *ngIf="selectedManager" class="modal d-block" style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form (ngSubmit)="selectedManager.id ? updateManager() : saveNewManager()">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ selectedManager.id ? 'Edit Manager' : 'Add Manager' }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+<input
+  class="form-control"
+  [(ngModel)]="selectedManager.name"
+  name="name"
+  required
+  #name="ngModel"
+/>
+<div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+  Name is required.
+</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+<input
+  type="email"
+  class="form-control"
+  [(ngModel)]="selectedManager.email"
+  name="email"
+  required
+  email
+  #email="ngModel"
+/>          </div>
+          <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <select class="form-select" [(ngModel)]="selectedManager.gender" name="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Join Date</label>
+            <input type="date" class="form-control" [(ngModel)]="selectedManager.joinDate" name="joinDate" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" [(ngModel)]="selectedManager.status" name="status">
+              <option value="Active">Active</option>
+              <option value="De-Active">De-Active</option>
+            </select>
+          </div>
+          <div *ngIf="!selectedManager.id">
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+<input
+  type="password"
+  class="form-control"
+  [(ngModel)]="selectedManager.password"
+  name="password"
+  required
+  minlength="6"
+  #password="ngModel"
+/>            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+<input
+  type="password"
+  class="form-control"
+  [(ngModel)]="selectedManager.confirmPassword"
+  name="confirmPassword"
+  required
+  #confirmPassword="ngModel"
+/>            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="deletingManager" class="modal d-block" style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Confirm Delete</h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete manager <strong>{{ deletingManager.name }}</strong>?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+          {{ isDeleting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

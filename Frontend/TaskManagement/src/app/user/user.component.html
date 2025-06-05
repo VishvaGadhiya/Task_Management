@@ -1,0 +1,232 @@
+<div class="container mt-4">
+  <h2>User Management</h2>
+
+  <!-- Search and Filter Controls -->
+  <div class="row mb-4 g-3">
+    <div class="col-md-4">
+           <div class="input-group">
+      <input 
+        type="search" 
+        class="form-control" 
+        placeholder="Search by name..." 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearch()" 
+        aria-label="Search users by name" 
+      />
+      <button class="btn btn-outline-secondary" type="button" (click)="onSearch()" aria-label="Search">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+    </div>
+    
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="genderFilter" (change)="onFilter()">
+        <option value="">All Genders</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="statusFilter" (change)="onFilter()">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="De-Active">De-Active</option>
+      </select>
+    </div>
+    
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+        <option value="5">5 per page</option>
+        <option value="10">10 per page</option>
+        <option value="20">20 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading and Error Messages -->
+  <div *ngIf="isLoading" class="alert alert-info text-center">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    Loading users...
+  </div>
+  
+
+  <!-- Users Table -->
+  <div class="table-responsive">
+    <table *ngIf="!isLoading" class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th (click)="onSort('name')" style="cursor: pointer;">
+            Name {{ getSortIcon('name') }}
+          </th>
+          <th (click)="onSort('gender')" style="cursor: pointer;">
+            Gender {{ getSortIcon('gender') }}
+          </th>
+          <th (click)="onSort('status')" style="cursor: pointer;">
+            Status {{ getSortIcon('status') }}
+          </th>
+          <th (click)="onSort('joinDate')" style="cursor: pointer;">
+            Join Date {{ getSortIcon('joinDate') }}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.name }}</td>
+          <td>{{ user.gender }}</td>
+          <td>
+             <span [class.badge]="true" 
+                   [class.bg-success]="user.status === 'Active'"
+                   [class.bg-warning]="user.status === 'Deactive'">
+               {{ user.status }}
+             </span>
+          </td>
+          <td>{{ user.joinDate | date: 'mediumDate' }}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-1" (click)="openEditModal(user)">
+              <i class="bi bi-pencil"></i> Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="openDeleteModal(user)">
+              <i class="bi bi-trash"></i> Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Users Found Message -->
+  <div *ngIf="!isLoading && users.length === 0" class="alert alert-warning text-center">
+    No users found matching your criteria.
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="row mt-3">
+    <div class="col-md-6">
+      <div class="text-muted">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+        {{ getShowingTo() }} of {{ totalItems }} users
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <nav aria-label="Page navigation" class="float-end">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(1)" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <li *ngFor="let page of getPages()" class="page-item" [class.active]="page === currentPage">
+            <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(totalPages)" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade show d-block" *ngIf="selectedUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit User</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm" (ngSubmit)="updateUser()">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control" [(ngModel)]="selectedUser.name" name="name" disabled>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <select class="form-select" [(ngModel)]="selectedUser.gender" name="gender" disabled>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" [(ngModel)]="selectedUser.status" name="status" required>
+              <option value="Active">Active</option>
+              <option value="De-Active">De-Active</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Join Date</label>
+            <input type="date" class="form-control" [(ngModel)]="selectedUser.joinDate" name="joinDate" disabled>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="isSaving">
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Error Message Popup -->
+<div 
+  *ngIf="errorMessage" 
+  class="alert alert-danger alert-dismissible fade show fixed-top m-3 shadow" 
+  role="alert" 
+  style="z-index: 9999;"
+>
+  {{ errorMessage }}
+  <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade show d-block" *ngIf="deletingUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete user <strong>{{ deletingUser?.name }}</strong>?</p>
+        <p class="text-danger">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+          <span *ngIf="isDeleting" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isDeleting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,152 @@
+<div class="container mt-4">
+  <h2>My Tasks</h2>
+
+  <!-- Search and Filter Controls -->
+  <div class="row mb-4 g-3">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input 
+          type="search" 
+          class="form-control" 
+          placeholder="Search tasks..." 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearch()" 
+          aria-label="Search tasks" 
+        />
+        <button class="btn btn-outline-secondary" type="button" (click)="onSearch()" aria-label="Search">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <select class="form-select" [(ngModel)]="statusFilter" (change)="onFilter()">
+        <option value="">All Statuses</option>
+        <option value="ToDo">ToDo</option>
+        <option value="InProgress">InProgress</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+    
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+        <option value="5">5 per page</option>
+        <option value="10">10 per page</option>
+        <option value="20">20 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading and Error Messages -->
+  <div *ngIf="isLoading" class="alert alert-info text-center">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    Loading tasks...
+  </div>
+  
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+  </div>
+  
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+    {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <!-- Tasks Table -->
+  <div class="table-responsive">
+    <table *ngIf="!isLoading" class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th (click)="onSort('title')" style="cursor: pointer;">
+            Title {{ getSortIcon('title') }}
+          </th>
+          <th (click)="onSort('description')" style="cursor: pointer;">
+            Description {{ getSortIcon('description') }}
+          </th>
+          <th (click)="onSort('dueDate')" style="cursor: pointer;">
+            Due Date {{ getSortIcon('dueDate') }}
+          </th>
+          <th (click)="onSort('status')" style="cursor: pointer;">
+            Status {{ getSortIcon('status') }}
+          </th>
+          <th>Change Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks">
+          <td>{{ task.title }}</td>
+          <td>{{ task.description }}</td>
+          <td>{{ task.dueDate | date:'mediumDate' }}</td>
+          <td>
+            <span class="badge" 
+                  [class.bg-secondary]="task.status === 'ToDo'"
+                  [class.bg-primary]="task.status === 'InProgress'"
+                  [class.bg-success]="task.status === 'Completed'">
+              {{ task.status }}
+            </span>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" 
+        #statusSelect 
+        [value]="task.status" 
+        (change)="updateStatus(task.taskId, statusSelect.value)">
+  <option value="ToDo">ToDo</option>
+  <option value="InProgress">InProgress</option>
+  <option value="Completed">Completed</option>
+</select>
+
+          </td>
+        </tr>
+        <tr *ngIf="tasks.length === 0 && !isLoading">
+          <td colspan="5" class="text-center text-muted">No tasks found matching your criteria</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="row mt-3">
+    <div class="col-md-6">
+      <div class="text-muted">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+        {{ getShowingTo() }} of {{ totalItems }} tasks
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <nav aria-label="Page navigation" class="float-end">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(1)" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <li *ngFor="let page of getPages()" class="page-item" [class.active]="page === currentPage">
+            <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(totalPages)" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
