@@ -1,7 +1,6 @@
 <div class="container mt-4">
   <h2>User Management</h2>
 
-  <!-- Search and Filter Controls -->
   <div class="row mb-4 g-3">
     <div class="col-md-4">
            <div class="input-group">
@@ -46,14 +45,12 @@
     </div>
   </div>
 
-  <!-- Loading and Error Messages -->
   <div *ngIf="isLoading" class="alert alert-info text-center">
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
     Loading users...
   </div>
   
 
-  <!-- Users Table -->
   <div class="table-responsive">
     <table *ngIf="!isLoading" class="table table-bordered table-hover">
       <thead class="table-light">
@@ -98,12 +95,10 @@
     </table>
   </div>
 
-  <!-- No Users Found Message -->
   <div *ngIf="!isLoading && users.length === 0" class="alert alert-warning text-center">
     No users found matching your criteria.
   </div>
 
-  <!-- Pagination -->
   <div *ngIf="totalPages > 1" class="row mt-3">
     <div class="col-md-6">
       <div class="text-muted">
@@ -148,7 +143,6 @@
   </div>
 </div>
 
-<!-- Edit User Modal -->
 <div class="modal fade show d-block" *ngIf="selectedUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -197,7 +191,6 @@
     </div>
   </div>
 </div>
-<!-- Error Message Popup -->
 <div 
   *ngIf="errorMessage" 
   class="alert alert-danger alert-dismissible fade show fixed-top m-3 shadow" 
@@ -208,7 +201,6 @@
   <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div class="modal fade show d-block" *ngIf="deletingUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

@@ -134,7 +134,7 @@ updateUser(): void {
   if (!this.selectedUser) return;
 
   this.isSaving = true;
-  this.errorMessage = null; // Clear previous errors
+  this.errorMessage = null; 
 
   this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
     next: (response: any) => {
@@ -143,18 +143,15 @@ updateUser(): void {
         this.closeModal();
         this.loadUsers();
       } else {
-        // Handle backend validation errors
         this.errorMessage = response?.message || 'User update failed.';
       }
     },
     error: (err) => {
       this.isSaving = false;
       
-      // Check for specific error message from backend
       if (err.error?.message) {
         this.errorMessage = err.error.message;
       } 
-      // Handle model state errors
       else if (err.error?.errors) {
         const errors = err.error.errors;
         this.errorMessage = Object.values(errors).flat().join(' ');

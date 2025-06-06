@@ -25,7 +25,6 @@ export class ResetPasswordComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // Read query params from URL
     this.model.email = this.route.snapshot.queryParamMap.get('email') || '';
     this.model.userId = this.route.snapshot.queryParamMap.get('userId') || '';
     const rawToken = this.route.snapshot.queryParamMap.get('token') || '';
@@ -33,7 +32,6 @@ export class ResetPasswordComponent {
   }
 
   submit() {
-    // Basic validation for matching passwords
     if (this.model.password !== this.model.confirmPassword) {
       Swal.fire({
         icon: 'error',

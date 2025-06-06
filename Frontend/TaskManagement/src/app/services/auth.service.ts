@@ -20,10 +20,8 @@ export class AuthService {
     }).pipe(
       tap(response => {
         if (response.token) {
-          // Consistently use 'authToken' key
           localStorage.setItem(this.tokenKey, response.token);
 
-          // Remove any other possible token keys to avoid confusion
           localStorage.removeItem('token');
 
           this.loggedIn.next(true);
@@ -38,7 +36,6 @@ getUserEmail(): string | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
 
-      // Check for your backend claim
       return payload.email || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || null;
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -68,7 +65,7 @@ getUserEmail(): string | null {
     return this.http.post(
       `${this.baseUrl}/forgot-password`,
       { email },
-      { responseType: 'text' } // Treat response as plain text to avoid JSON parse error
+      { responseType: 'text' } 
     );
   }
 
@@ -110,7 +107,6 @@ getUserRole(): string | null {
 }
 
 
-  // Debug method for token
   decodeAndLogToken() {
     const token = this.getToken();
     if (!token) {

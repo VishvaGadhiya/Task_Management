@@ -139,19 +139,15 @@ export class TaskComponent implements OnInit {
   }
 
 saveTask(): void {
-  // Basic required fields validation
   if (!this.selectedTask || !this.selectedTask.title?.trim() || !this.selectedTask.status || !this.selectedTask.dueDate) {
     this.errorMessage = 'Please fill all required fields.';
     return;
   }
 
-  // Normalize title and description for comparison
   const newTitle = this.selectedTask.title.trim().toLowerCase();
   const newDescription = (this.selectedTask.description || '').trim().toLowerCase();
 
-  // Check duplicate: title OR description already exists in other tasks
   const isDuplicate = this.tasks.some(task => {
-    // Skip the current task if editing
     if (task.id === this.selectedTask.id) return false;
 
     const existingTitle = (task.title || '').trim().toLowerCase();
@@ -165,7 +161,6 @@ saveTask(): void {
     return;
   }
 
-  // Clear previous error before saving
   this.errorMessage = null;
   this.isSaving = true;
 

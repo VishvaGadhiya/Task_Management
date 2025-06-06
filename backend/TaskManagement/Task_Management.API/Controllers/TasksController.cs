@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Task_Management.Interfaces.Interfaces;
 using Task_Management.Shared.DTOs;
 
@@ -58,6 +59,8 @@ namespace Task_Management.API.Controllers
         public async Task<IActionResult> Create(CreateOrEditTaskDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            dto.Status = "ToDo"; 
+
             var created = await _taskService.AddTaskAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }

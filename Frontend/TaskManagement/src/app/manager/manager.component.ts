@@ -207,7 +207,6 @@ saveNewManager(): void {
   if (!this.selectedManager.joinDate) {
     this.formErrors.joinDate = 'Join date is required';
   } else {
-    // Format date to YYYY-MM-DD if needed
     this.selectedManager.joinDate = new Date(this.selectedManager.joinDate).toISOString().split('T')[0];
   }
  
@@ -255,11 +254,9 @@ saveNewManager(): void {
      
       if (err.status === 400) {
         if (err.error && err.error.errors) {
-          // Handle field-specific errors from API
           this.formErrors = err.error.errors;
         }
         else if (err.error && typeof err.error === 'object') {
-          // Handle other validation errors
           this.formErrors = err.error;
         }
         else if (err.error && err.error.message) {

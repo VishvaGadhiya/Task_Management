@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  imports: [CommonModule, ReactiveFormsModule],  // <-- add CommonModule here
+  imports: [CommonModule, ReactiveFormsModule],  
 
 })
 export class ChangePasswordComponent {

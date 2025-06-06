@@ -21,7 +21,7 @@ export class ForgotPasswordComponent {
       Swal.fire({
         icon: 'success',
         title: 'Email Sent',
-        text: response,  // Use backend's plain text response
+        text: response,  
         confirmButtonColor: '#3b82f6'
       });
     },

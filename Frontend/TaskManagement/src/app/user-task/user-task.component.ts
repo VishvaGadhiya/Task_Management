@@ -1,4 +1,3 @@
-// user-task.component.ts
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -101,12 +100,10 @@ get activeUsers() {
 }
 
 getAvailableTasksForUser(userId: number): any[] {
-  // Sare assigned task ids, except currently editing assignment (to allow editing without losing the assigned task)
   const assignedTaskIds = this.userTasks
     .filter(ut => ut.id !== this.selectedUserTask?.id)
     .map(ut => ut.taskId);
 
-  // Filter out tasks which are already assigned
   return this.tasks.filter(t => !assignedTaskIds.includes(t.id));
 }
 

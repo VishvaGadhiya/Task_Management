@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ManagerService {
-  private apiUrl = 'https://localhost:7125/api/Manager'; // API endpoint for managers
+  private apiUrl = 'https://localhost:7125/api/Manager'; 
  
   constructor(private http: HttpClient) {}
  
@@ -24,7 +24,7 @@ getManagers(
     Draw: 1,
     Start: (page - 1) * pageSize,
     Length: pageSize,
-    SearchValue: searchTerm, // This will search across all searchable fields
+    SearchValue: searchTerm, 
     Gender: gender,
     Status: status,
     SortColumn: sortColumn,

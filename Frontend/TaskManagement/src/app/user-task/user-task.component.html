@@ -1,7 +1,6 @@
 <div class="container mt-4">
   <h2>User Task Assignments</h2>
 <div class="row align-items-end mb-4 g-3">
-  <!-- Search Input with Button -->
   <div class="col-md-5">
     <label for="search" class="form-label"></label>
     <div class="input-group">
@@ -25,7 +24,6 @@
     </div>
   </div>
 
-  <!-- Items Per Page Dropdown -->
   <div class="col-md-3">
     <label for="itemsPerPage" class="form-label"></label>
     <select
@@ -41,7 +39,6 @@
     </select>
   </div>
 
-  <!-- Add Assignment Button -->
   <div class="col-md-4 text-end">
     <button class="btn btn-success" (click)="addUserTask()">
       <i class="bi bi-plus-circle me-1"></i> Add Assignment
@@ -59,8 +56,7 @@
           <th (click)="onSort('taskId')" style="cursor: pointer;">
             Task {{ getSortIcon('taskId') }}
           </th>
-              <th>Status</th> <!-- 👈 Added column -->
-
+              <th>Status</th> 
           <th style="width: 160px;">Actions</th>
         </tr>
       </thead>
@@ -88,7 +84,6 @@
   </table>
 </div>
 
-<!-- Add/Edit Modal -->
 <div
   *ngIf="selectedUserTask"
   class="modal d-block"
@@ -134,7 +129,6 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div
   *ngIf="deletingUserTask"
   class="modal d-block"

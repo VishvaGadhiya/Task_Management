@@ -34,7 +34,7 @@ loadUserProfile() {
   this.userService.getProfile().subscribe({
     next: (data) => {
       this.profileForm.patchValue({
-        fullName: data.name,  // 🔑 Correct mapping
+        fullName: data.name,  
         gender: data.gender
       });
     },

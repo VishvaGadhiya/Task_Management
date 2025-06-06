@@ -13,7 +13,6 @@ export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('authToken');
     console.log("Inter " + token);
-    //const headersConfig = token ? { Authorization: `Bearer ${token}` } : {};
 
     const newRequest = request.clone({
       setHeaders: token ? { Authorization: `Bearer ${token}` } : {},

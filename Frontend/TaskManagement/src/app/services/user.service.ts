@@ -39,7 +39,6 @@ updateUser(id: number, user: any): Observable<{success: boolean, message?: strin
   ).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 400) {
-        // Return the error message from the backend
         return throwError(() => error.error);
       }
       return throwError(() => new Error('Something went wrong. Please try again later.'));
@@ -62,7 +61,6 @@ updateUser(id: number, user: any): Observable<{success: boolean, message?: strin
     return this.http.get<UserProfile>(`${this.accountApiUrl}/my-profile`);
   }
 
-  // Also update profile uses the same URL
  updateProfile(profile: UserProfile): Observable<any> {
     return this.http.put<any>(`${this.accountApiUrl}/update-profile`, profile);
   }
