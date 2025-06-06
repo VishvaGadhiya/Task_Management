@@ -25,11 +25,12 @@ namespace Task_Management.Repository.Services
 
             var users = await (from u in _context.Users
                                join ur in _context.UserRoles on u.Id equals ur.UserId
-                               where ur.RoleId == userRoleId
+                               where ur.RoleId == userRoleId && u.EmailConfirmed
                                select u).ToListAsync();
 
             return users;
         }
+
 
         public async Task<PaginatedResult<User>> GetUsersPaginatedAsync(UserDataTableRequest request)
         {
@@ -41,7 +42,7 @@ namespace Task_Management.Repository.Services
 
             var query = from u in _context.Users
                         join ur in _context.UserRoles on u.Id equals ur.UserId
-                        where ur.RoleId == userRoleId
+                        where ur.RoleId == userRoleId && u.EmailConfirmed
                         select u;
 
             if (!string.IsNullOrEmpty(request.SearchValue))
@@ -113,13 +114,27 @@ namespace Task_Management.Repository.Services
             return true;
         }
 
-        public async Task<bool> UpdateUserAsync(CreateOrEditUserDto dto)
+        public async Task<(bool Success, string? ErrorMessage)> UpdateUserAsync(CreateOrEditUserDto dto)
         {
             if (await UserExistsAsync(dto.Name, dto.Gender, dto.Id))
-                return false;
+                return (false, "A user with the same Name and Gender already exists.");
 
             var user = await GetUserByIdAsync(dto.Id);
-            if (user == null) return false;
+            if (user == null) return (false, "User not found.");
+
+            bool isDeactivating = user.Status == "Active" && dto.Status == "De-Active";
+
+            if (isDeactivating)
+            {
+                bool hasIncompleteTasks = await _context.UserTasks
+                    .Include(ut => ut.Task)
+                    .AnyAsync(ut => ut.UserId == user.Id &&
+                        !ut.Task.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase));
+
+                if (hasIncompleteTasks)
+                    return (false, "User has incomplete tasks. Please complete all tasks before deactivating.");
+            }
+
 
             user.Name = dto.Name;
             user.Gender = dto.Gender;
@@ -128,8 +143,10 @@ namespace Task_Management.Repository.Services
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
-            return true;
+
+            return (true, null);
         }
+
 
         public async Task<bool> DeleteUserAsync(int id)
         {

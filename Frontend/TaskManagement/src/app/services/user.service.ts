@@ -27,13 +27,25 @@ export class UserService {
       SortDirection: sortDirection
     };
 
-    return this.http.post<any>(`${this.apiUrl}/GetPaginated`, request) 
+return this.http.post<any>(`${this.apiUrl}/GetPaginated`, request);
 
   }
 
-  updateUser(id: number, user: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/Edit`, user, { withCredentials: true });
-  }
+updateUser(id: number, user: any): Observable<{success: boolean, message?: string}> {
+  return this.http.put<{success: boolean, message?: string}>(
+    `${this.apiUrl}/Edit`, 
+    user, 
+    { withCredentials: true }
+  ).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 400) {
+        // Return the error message from the backend
+        return throwError(() => error.error);
+      }
+      return throwError(() => new Error('Something went wrong. Please try again later.'));
+    })
+  );
+}
 
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/Delete/${id}`, { withCredentials: true });

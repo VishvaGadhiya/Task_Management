@@ -130,22 +130,41 @@ export class UserComponent implements OnInit {
     this.selectedUser = null;
   }
 
-  updateUser(): void {
-    if (!this.selectedUser) return;
+updateUser(): void {
+  if (!this.selectedUser) return;
 
-    this.isSaving = true;
-    this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
-      next: () => {
-        this.isSaving = false;
+  this.isSaving = true;
+  this.errorMessage = null; // Clear previous errors
+
+  this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
+    next: (response: any) => {
+      this.isSaving = false;
+      if (response?.success) {
         this.closeModal();
         this.loadUsers();
-      },
-      error: (err) => {
-        this.isSaving = false;
+      } else {
+        // Handle backend validation errors
+        this.errorMessage = response?.message || 'User update failed.';
+      }
+    },
+    error: (err) => {
+      this.isSaving = false;
+      
+      // Check for specific error message from backend
+      if (err.error?.message) {
+        this.errorMessage = err.error.message;
+      } 
+      // Handle model state errors
+      else if (err.error?.errors) {
+        const errors = err.error.errors;
+        this.errorMessage = Object.values(errors).flat().join(' ');
+      } 
+      else {
         this.errorMessage = err.message || 'Failed to update user.';
       }
-    });
-  }
+    }
+  });
+}
 
   openDeleteModal(user: any): void {
     this.deletingUser = user;

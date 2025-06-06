@@ -101,16 +101,21 @@ namespace Task_Management.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _userService.UpdateUserAsync(dto);
+            var (success, errorMessage) = await _userService.UpdateUserAsync(dto);
 
-            if (!result)
+            if (!success)
             {
+                if (!string.IsNullOrEmpty(errorMessage))
+                    return BadRequest(new { success = false, message = errorMessage });
+
                 ModelState.AddModelError("Name", "A user with the same Name and Gender already exists.");
                 return BadRequest(ModelState);
             }
 
             return Ok(new { success = true });
         }
+
+
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)

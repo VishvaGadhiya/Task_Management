@@ -5,9 +5,9 @@
     <i class="bi bi-plus-circle me-1"></i> Add Manager
   </button>
 </div>
-
+ 
 <div class="row g-3 align-items-end mb-4">
-
+ 
   <div class="col-md-4">
     <div class="input-group">
       <input
@@ -28,8 +28,7 @@
       </button>
     </div>
   </div>
-
-  <!-- Gender Filter -->
+ 
   <div class="col-md-3">
     <select
       class="form-select"
@@ -43,8 +42,7 @@
       <option value="Other">Other</option>
     </select>
   </div>
-
-  <!-- Status Filter -->
+ 
   <div class="col-md-3">
     <select
       class="form-select"
@@ -57,8 +55,7 @@
       <option value="De-Active">De-Active</option>
     </select>
   </div>
-
-  <!-- Items Per Page -->
+ 
   <div class="col-md-2">
     <select
       class="form-select"
@@ -72,20 +69,20 @@
       <option value="50">50 per page</option>
     </select>
   </div>
-
+ 
 </div>
-
+ 
   <!-- Loading and Error Messages -->
   <div *ngIf="isLoading" class="alert alert-info text-center">
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
     Loading managers...
   </div>
-  
+ 
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
     <button type="button" class="btn-close float-end" (click)="errorMessage = null"></button>
   </div>
-
+ 
   <!-- Managers Table -->
   <div class="table-responsive">
     <table *ngIf="!isLoading" class="table table-bordered table-hover">
@@ -116,7 +113,7 @@
           <td>{{ manager.gender }}</td>
           <td>{{ manager.joinDate | date: 'yyyy-MM-dd' }}</td>
           <td>
-            <span [class.badge]="true" 
+            <span [class.badge]="true"
                   [class.bg-success]="manager.status === 'Active'"
                   [class.bg-warning]="manager.status === 'De-Active'">
               {{ manager.status }}
@@ -130,21 +127,19 @@
       </tbody>
     </table>
   </div>
-
-  <!-- No Managers Found Message -->
+ 
   <div *ngIf="!isLoading && managers.length === 0" class="alert alert-warning text-center">
     No managers found matching your criteria.
   </div>
-
-  <!-- Pagination -->
+ 
   <div *ngIf="totalPages > 1" class="row mt-3">
     <div class="col-md-6">
       <div class="text-muted">
-        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
         {{ getShowingTo() }} of {{ totalItems }} managers
       </div>
     </div>
-    
+   
     <div class="col-md-6">
       <nav aria-label="Page navigation" class="float-end">
         <ul class="pagination">
@@ -153,23 +148,23 @@
               <span aria-hidden="true">&laquo;&laquo;</span>
             </a>
           </li>
-          
+         
           <li class="page-item" [class.disabled]="currentPage === 1">
             <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
-          
+         
           <li *ngFor="let page of getPages()" class="page-item" [class.active]="page === currentPage">
             <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
           </li>
-          
+         
           <li class="page-item" [class.disabled]="currentPage === totalPages">
             <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
-          
+         
           <li class="page-item" [class.disabled]="currentPage === totalPages">
             <a class="page-link" (click)="onPageChange(totalPages)" aria-label="Last">
               <span aria-hidden="true">&raquo;&raquo;</span>
@@ -180,41 +175,35 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- Add/Edit Manager Modal -->
+<!-- Update your modal form with validation messages -->
 <div *ngIf="selectedManager" class="modal d-block" style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form (ngSubmit)="selectedManager.id ? updateManager() : saveNewManager()">
+      <form (ngSubmit)="selectedManager.id ? updateManager() : saveNewManager()" #managerForm="ngForm">
         <div class="modal-header">
           <h5 class="modal-title">{{ selectedManager.id ? 'Edit Manager' : 'Add Manager' }}</h5>
           <button type="button" class="btn-close" (click)="closeModal()"></button>
         </div>
+       
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Name</label>
-<input
-  class="form-control"
-  [(ngModel)]="selectedManager.name"
-  name="name"
-  required
-  #name="ngModel"
-/>
-<div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-  Name is required.
-</div>
+            <input class="form-control" [(ngModel)]="selectedManager.name" name="name" required>
+            <div *ngIf="formSubmitted && formErrors.name" class="text-danger small mt-1">
+              {{ formErrors.name }}
+            </div>
           </div>
+         
           <div class="mb-3">
             <label class="form-label">Email</label>
-<input
-  type="email"
-  class="form-control"
-  [(ngModel)]="selectedManager.email"
-  name="email"
-  required
-  email
-  #email="ngModel"
-/>          </div>
+            <input type="email" class="form-control" [(ngModel)]="selectedManager.email" name="email" required>
+            <div *ngIf="formSubmitted && formErrors.email" class="text-danger small mt-1">
+              {{ formErrors.email }}
+            </div>
+          </div>
+         
           <div class="mb-3">
             <label class="form-label">Gender</label>
             <select class="form-select" [(ngModel)]="selectedManager.gender" name="gender">
@@ -223,10 +212,21 @@
               <option value="Other">Other</option>
             </select>
           </div>
+         
           <div class="mb-3">
             <label class="form-label">Join Date</label>
-            <input type="date" class="form-control" [(ngModel)]="selectedManager.joinDate" name="joinDate" />
+<input
+  type="date"
+  class="form-control"
+  [(ngModel)]="selectedManager.joinDate"
+  name="joinDate"
+  [readonly]="true"
+/>
+            <div *ngIf="formSubmitted && formErrors.joinDate" class="text-danger small mt-1">
+              {{ formErrors.joinDate }}
+            </div>
           </div>
+         
           <div class="mb-3">
             <label class="form-label">Status</label>
             <select class="form-select" [(ngModel)]="selectedManager.status" name="status">
@@ -234,30 +234,30 @@
               <option value="De-Active">De-Active</option>
             </select>
           </div>
+         
           <div *ngIf="!selectedManager.id">
             <div class="mb-3">
               <label class="form-label">Password</label>
-<input
-  type="password"
-  class="form-control"
-  [(ngModel)]="selectedManager.password"
-  name="password"
-  required
-  minlength="6"
-  #password="ngModel"
-/>            </div>
+              <input type="password" class="form-control" [(ngModel)]="selectedManager.password" name="password" required>
+              <div *ngIf="formSubmitted && formErrors.password" class="text-danger small mt-1">
+                {{ formErrors.password }}
+              </div>
+            </div>
+           
             <div class="mb-3">
               <label class="form-label">Confirm Password</label>
-<input
-  type="password"
-  class="form-control"
-  [(ngModel)]="selectedManager.confirmPassword"
-  name="confirmPassword"
-  required
-  #confirmPassword="ngModel"
-/>            </div>
+              <input type="password" class="form-control" [(ngModel)]="selectedManager.confirmPassword" name="confirmPassword" required>
+              <div *ngIf="formSubmitted && formErrors.confirmPassword" class="text-danger small mt-1">
+                {{ formErrors.confirmPassword }}
+              </div>
+            </div>
+          </div>
+         
+          <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+            {{ errorMessage }}
           </div>
         </div>
+       
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" [disabled]="isSaving">
@@ -268,8 +268,7 @@
     </div>
   </div>
 </div>
-
-<!-- Delete Confirmation Modal -->
+ 
 <div *ngIf="deletingManager" class="modal d-block" style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

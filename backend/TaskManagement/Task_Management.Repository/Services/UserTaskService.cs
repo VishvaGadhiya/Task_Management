@@ -165,6 +165,7 @@ namespace Task_Management.Repository.Services
             var users = await (from u in _context.Users
                                join ur in _context.UserRoles on u.Id equals ur.UserId
                                where ur.RoleId == userRoleId
+                               && u.EmailConfirmed == true    
                                select u).ToListAsync();
 
             return users;
