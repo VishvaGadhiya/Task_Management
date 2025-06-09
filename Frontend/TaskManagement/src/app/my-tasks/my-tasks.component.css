@@ -1,125 +1,282 @@
-/* Container styling */
+/* Base font and container */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+}
+
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
+  max-width: 1140px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+}
+
+/* Heading */
+h2 {
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+/* Input groups and selects */
+.input-group input.form-control,
+.form-select {
+  border: 1.8px solid #d1d5db; /* Tailwind's cool gray 300 */
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.05);
+}
+
+.input-group input.form-control:focus,
+.form-select:focus {
+  border-color: #2563eb; /* Tailwind blue-600 */
+  box-shadow: 0 0 5px rgb(37 99 235 / 0.3);
+  outline: none;
+}
+
+/* Search button */
+.input-group .btn-outline-secondary {
+  background-color: transparent;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+  border-radius: 0 6px 6px 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.input-group .btn-outline-secondary:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+.input-group .btn-outline-secondary i {
+  margin-right: 4px;
+  font-size: 1.1rem;
 }
 
 /* Table styling */
 .table {
-  margin-bottom: 0;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+  user-select: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.table th, 
+.table td {
+  padding: 12px 18px;
+  vertical-align: middle;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
 .table th {
-  position: sticky;
-  top: 0;
-  background-color: #f8f9fa;
-  padding: 12px 15px;
-  text-align: left;
+  cursor: pointer;
+  transition: color 0.25s ease;
 }
 
-.table td {
-  padding: 12px 15px;
-  vertical-align: middle;
-  border-top: 1px solid #dee2e6;
+.table th:hover {
+  color: #2563eb;
 }
 
-.table-hover tbody tr:hover {
-  background-color: #f5f5f5;
+.table tbody tr:hover {
+  background-color: #e0f2fe; /* Light blue highlight */
+  transition: background-color 0.3s ease;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 /* Badge styling */
 .badge {
-  padding: 0.5em 0.75em;
-  font-size: 0.85em;
-  font-weight: 500;
-  border-radius: 0.25rem;
+  padding: 0.4em 0.85em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 12px;
   text-transform: capitalize;
+  user-select: none;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
 }
 
 .bg-secondary {
-  background-color: #6c757d !important;
-  color: white;
+  background-color: #6b7280 !important; /* cool gray */
+  color: #f9fafb;
 }
 
 .bg-primary {
-  background-color: #0d6efd !important;
+  background-color: #3b82f6 !important; /* blue-500 */
   color: white;
 }
 
 .bg-success {
-  background-color: #198754 !important;
+  background-color: #22c55e !important; /* green-500 */
   color: white;
 }
 
-/* Form select styling */
-.form-select {
-  max-width: 200px;
-  display: inline-block;
-}
-
+/* Select in table */
 .form-select-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1.5px solid #d1d5db;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.06);
+  transition: border-color 0.3s ease;
 }
 
-/* Pagination styling */
+.form-select-sm:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 6px rgb(37 99 235 / 0.4);
+  outline: none;
+}
+
+/* Pagination */
 .pagination {
-  margin-bottom: 0;
+  margin: 0;
+  user-select: none;
 }
 
 .page-link {
   cursor: pointer;
   user-select: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin: 0 3px;
+  color: #2563eb;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.page-link:hover:not(.disabled) {
+  background-color: #e0f2fe;
+  border-color: #2563eb;
+  text-decoration: none;
+}
+
+.page-item.active .page-link {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+  cursor: default;
+  box-shadow: 0 0 6px rgb(37 99 235 / 0.5);
+}
+
+.page-item.disabled .page-link {
+  cursor: not-allowed;
+  color: #9ca3af;
 }
 
 /* Loading spinner */
 .spinner-border {
   vertical-align: middle;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 0.2em;
 }
 
-/* Responsive adjustments */
+/* Alerts */
+.alert {
+  border-radius: 8px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.alert-info {
+  background-color: #e0f2fe;
+  color: #2563eb;
+  border: 1.5px solid #bae6fd;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #fecaca;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1.5px solid #bbf7d0;
+}
+
+.btn-close {
+  filter: brightness(0.7);
+  transition: filter 0.2s ease;
+}
+
+.btn-close:hover {
+  filter: brightness(1);
+}
+
+/* Responsive tweaks */
 @media (max-width: 768px) {
   .table-responsive {
     border: 0;
   }
-  
+
   .table thead {
     display: none;
   }
-  
+
   .table tr {
     display: block;
     margin-bottom: 1rem;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
   }
-  
+
   .table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem;
-    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: normal;
   }
-  
+
   .table td::before {
     content: attr(data-label);
-    font-weight: bold;
-    margin-right: 1rem;
+    font-weight: 700;
+    color: #4b5563;
+    flex-basis: 40%;
+    text-transform: capitalize;
   }
-  
+
   .table td:last-child {
     border-bottom: 0;
   }
-  
+
   .form-select {
     max-width: 100%;
   }
-  
+
   .pagination {
     justify-content: center;
   }

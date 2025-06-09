@@ -72,6 +72,8 @@
       </thead>
       <tbody>
         <tr *ngFor="let user of users">
+            <td><img [src]="getUserImage(user.imageUrl)" alt="Profile" width="50" height="50" class="rounded-circle"></td>
+
           <td>{{ user.name }}</td>
           <td>{{ user.gender }}</td>
           <td>

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Task_Management.Shared;
-using Task_Management.Interfaces.Interfaces;
-using TaskManagement.EntityFrameworkCore.Data.Data;
-using Task_Management.Shared.DTOs;
 using System.Linq.Dynamic.Core;
+using Task_Management.Interfaces.Interfaces;
+using Task_Management.Shared;
+using Task_Management.Shared.DTOs;
+using TaskManagement.EntityFrameworkCore.Data.Data;
 
 
 namespace Task_Management.Repository.Services
@@ -31,7 +32,9 @@ namespace Task_Management.Repository.Services
                 Email = m.Email,
                 Gender = m.Gender,
                 JoinDate = m.JoinDate,
-                Status = m.Status
+                Status = m.Status,
+                ProfileImagePath = m.ProfileImagePath 
+
             });
         }
 
@@ -49,7 +52,9 @@ namespace Task_Management.Repository.Services
                 Email = user.Email,
                 Gender = user.Gender,
                 JoinDate = user.JoinDate,
-                Status = user.Status
+                Status = user.Status,
+                ProfileImagePath = user.ProfileImagePath 
+
             };
         }
 
@@ -114,7 +119,8 @@ namespace Task_Management.Repository.Services
                 Email = m.Email,
                 Gender = m.Gender,
                 JoinDate = m.JoinDate,
-                Status = m.Status
+                Status = m.Status,
+                ProfileImagePath = m.ProfileImagePath
             }).ToList();
 
             return new PaginatedResult<ManagerViewModel>
@@ -127,6 +133,8 @@ namespace Task_Management.Repository.Services
         }
         public async Task<ManagerViewModel> CreateAsync(ManagerViewModel manager)
         {
+            var imagePath = await SaveProfileImageAsync(manager.ProfileImage);
+
             var user = new User
             {
                 UserName = manager.Email,
@@ -135,6 +143,7 @@ namespace Task_Management.Repository.Services
                 Gender = manager.Gender,
                 JoinDate = manager.JoinDate,
                 Status = manager.Status,
+                ProfileImagePath = imagePath,
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
@@ -150,16 +159,17 @@ namespace Task_Management.Repository.Services
             manager.Id = user.Id;
             manager.Password = null;
             manager.ConfirmPassword = null;
+            manager.ProfileImagePath = imagePath;
 
             return manager;
         }
 
+
         public async Task<bool> UpdateAsync(int id, ManagerViewModel manager)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null) return false;
-
-            if (!await _userManager.IsInRoleAsync(user, "Manager")) return false;
+            if (user == null || !await _userManager.IsInRoleAsync(user, "Manager"))
+                return false;
 
             user.Name = manager.Name;
             user.Email = manager.Email;
@@ -167,6 +177,12 @@ namespace Task_Management.Repository.Services
             user.Gender = manager.Gender;
             user.JoinDate = manager.JoinDate;
             user.Status = manager.Status;
+
+            if (manager.ProfileImage != null)
+            {
+                var imagePath = await SaveProfileImageAsync(manager.ProfileImage);
+                user.ProfileImagePath = imagePath;
+            }
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded) return false;
@@ -180,6 +196,25 @@ namespace Task_Management.Repository.Services
 
             return true;
         }
+        private async Task<string?> SaveProfileImageAsync(IFormFile? file)
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "managers");
+            Directory.CreateDirectory(folderPath);
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"/uploads/managers/{fileName}";
+        }
+
 
         public async Task<bool> DeleteAsync(int id)
         {
@@ -191,5 +226,7 @@ namespace Task_Management.Repository.Services
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
         }
+
+
     }
 }

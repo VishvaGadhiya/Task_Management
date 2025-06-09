@@ -36,20 +36,20 @@ getManagers(
   );
 }
  
-addManager(manager: any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}`, manager).pipe(
+addManager(formData: FormData): Observable<any> {
+  return this.http.post<any>(this.apiUrl, formData).pipe(
     catchError((error: HttpErrorResponse) => {
       console.error('ManagerService Error:', error);
       return throwError(() => error);
     })
   );
 }
- 
-  updateManager(manager: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${manager.id}`, manager).pipe(
-      catchError(this.handleError)
-    );
-  }
+
+updateManager(id: number, formData: FormData): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${id}`, formData).pipe(
+    catchError(this.handleError)
+  );
+}
  
   deleteManager(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(

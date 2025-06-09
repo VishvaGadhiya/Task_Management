@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Task_Management.Shared.DTOs
 {
@@ -21,6 +22,8 @@ namespace Task_Management.Shared.DTOs
         [Required]
         [DataType(DataType.Date)]
         public DateTime JoinDate { get; set; }
+        public IFormFile? ProfileImage { get; set; }
+        public string? ProfileImagePath { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

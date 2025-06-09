@@ -114,38 +114,31 @@ namespace Task_Management.Repository.Services
             return true;
         }
 
-        public async Task<(bool Success, string? ErrorMessage)> UpdateUserAsync(CreateOrEditUserDto dto)
+        public async Task<(bool Success, string? ErrorMessage)> UpdateUserStatusAsync(int userId, string newStatus)
         {
-            if (await UserExistsAsync(dto.Name, dto.Gender, dto.Id))
-                return (false, "A user with the same Name and Gender already exists.");
-
-            var user = await GetUserByIdAsync(dto.Id);
+            var user = await GetUserByIdAsync(userId);
             if (user == null) return (false, "User not found.");
 
-            bool isDeactivating = user.Status == "Active" && dto.Status == "De-Active";
+            bool isDeactivating = user.Status == "Active" && newStatus == "De-Active";
 
             if (isDeactivating)
             {
                 bool hasIncompleteTasks = await _context.UserTasks
                     .Include(ut => ut.Task)
                     .AnyAsync(ut => ut.UserId == user.Id &&
-                        !ut.Task.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase));
+                                    ut.Task.Status.ToLower() != "completed");
 
                 if (hasIncompleteTasks)
-                    return (false, "User has incomplete tasks. Please complete all tasks before deactivating.");
+                    return (false, "User has incomplete tasks. Please complete them before deactivating.");
             }
 
-
-            user.Name = dto.Name;
-            user.Gender = dto.Gender;
-            user.JoinDate = dto.JoinDate;
-            user.Status = dto.Status;
-
+            user.Status = newStatus;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             return (true, null);
         }
+
 
 
         public async Task<bool> DeleteUserAsync(int id)

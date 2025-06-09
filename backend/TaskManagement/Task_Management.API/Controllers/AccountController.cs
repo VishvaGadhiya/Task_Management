@@ -17,11 +17,14 @@ namespace Task_Management.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        [DisableRequestSizeLimit] // optional: to control max upload size
+        public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var result = await _accountService.RegisterUserAsync(model);
+
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -31,6 +34,7 @@ namespace Task_Management.API.Controllers
 
             return Ok(new { Message = "Registration successful. Please confirm your email." });
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)

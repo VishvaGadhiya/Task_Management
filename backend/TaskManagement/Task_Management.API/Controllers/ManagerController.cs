@@ -50,7 +50,7 @@ namespace Task_Management.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ManagerViewModel manager)
+        public async Task<IActionResult> Create([FromForm] ManagerViewModel manager)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +67,8 @@ namespace Task_Management.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ManagerViewModel manager)
+        public async Task<IActionResult> Update(int id, [FromForm] ManagerViewModel manager)
+
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

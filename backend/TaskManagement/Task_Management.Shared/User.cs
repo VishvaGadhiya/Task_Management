@@ -13,6 +13,8 @@ namespace Task_Management.Shared
         public string? Gender { get; set; }
         public DateTime JoinDate { get; set; }
         public string? Status { get; set; }
+        public string? ProfileImagePath { get; set; } 
+
         public ICollection<UserTask>? UserTasks { get; set; }
     }
 }

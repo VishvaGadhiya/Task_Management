@@ -67,5 +67,8 @@
     font-weight: bold;
     margin-right: 1rem;
   }
-  
+  .object-fit-cover {
+  object-fit: cover;
+}
+
 }

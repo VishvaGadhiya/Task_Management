@@ -209,5 +209,14 @@ confirmDelete(): void {
     if (this.sortColumn !== column) return '';
     return this.sortDirection === 'asc' ? '↑' : '↓';
   }
-  
+  getUserImage(imageUrl: string): string {
+  if (!imageUrl) {
+    return 'https://localhost:7125/uploads/users/default.jpg';
+  }
+  if (imageUrl.startsWith('http')) {
+    return imageUrl;
+  }
+  return `https://localhost:7125/${imageUrl}`;
+}
+
 }

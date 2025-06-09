@@ -31,11 +31,11 @@ namespace Task_Management.API.Controllers
                 name = u.Name,
                 gender = u.Gender,
                 joinDate = u.JoinDate.ToString("yyyy-MM-dd"),
-                status = u.Status == "Active" ? "Active" : "Deactive"
+                status = u.Status == "Active" ? "Active" : "Deactive",
+                imageUrl = u.ProfileImagePath ?? "default-image-path-or-url.jpg" 
             });
             return Ok(result);
         }
-
 
         [HttpPost("GetPaginated")]
         public async Task<IActionResult> GetPaginatedUsers([FromBody] UserDataTableRequest request)
@@ -48,7 +48,8 @@ namespace Task_Management.API.Controllers
                 name = u.Name,
                 gender = u.Gender,
                 joinDate = u.JoinDate.ToString("yyyy-MM-dd"),
-                status = u.Status == "Active" ? "Active" : "Deactive"
+                status = u.Status == "Active" ? "Active" : "Deactive",
+                imageUrl = u.ProfileImagePath ?? "default-image-path-or-url.jpg"
             }).ToList();
 
             return Ok(new
@@ -59,6 +60,7 @@ namespace Task_Management.API.Controllers
                 data = mappedData
             });
         }
+
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create(CreateOrEditUserDto dto)
@@ -89,31 +91,30 @@ namespace Task_Management.API.Controllers
                 Name = user.Name,
                 Gender = user.Gender,
                 JoinDate = user.JoinDate,
-                Status = user.Status
+                Status = user.Status,
+
             };
 
             return Ok(dto);
         }
-
-        [HttpPut("Edit")]
-        public async Task<IActionResult> Edit(CreateOrEditUserDto dto)
+        [HttpPost("EditStatus")]
+        public async Task<IActionResult> EditStatus([FromBody] CreateOrEditUserDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var result = await _userService.UpdateUserStatusAsync(dto.Id, dto.Status);
 
-            var (success, errorMessage) = await _userService.UpdateUserAsync(dto);
+            if (!result.Success)
+                return BadRequest(new { message = result.ErrorMessage });
 
-            if (!success)
+            // Return the updated user data
+            var updatedUser = await _userService.GetUserByIdAsync(dto.Id);
+            return Ok(new
             {
-                if (!string.IsNullOrEmpty(errorMessage))
-                    return BadRequest(new { success = false, message = errorMessage });
-
-                ModelState.AddModelError("Name", "A user with the same Name and Gender already exists.");
-                return BadRequest(ModelState);
-            }
-
-            return Ok(new { success = true });
+                success = true,
+                message = "User status updated successfully.",
+                user = updatedUser
+            });
         }
+
 
 
 

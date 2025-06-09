@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Task_Management.Shared.DTOs
 {
@@ -30,6 +31,8 @@ namespace Task_Management.Shared.DTOs
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string? ConfirmPassword { get; set; }
+        public IFormFile? ProfileImage { get; set; }
+        public string? ProfileImagePath { get; set; }
 
     }
 }

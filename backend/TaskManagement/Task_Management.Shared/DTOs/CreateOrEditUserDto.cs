@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json.Serialization;
 
@@ -19,5 +20,8 @@ namespace Task_Management.Shared.DTOs
 
         [Required]
         public string Status { get; set; }
+        public IFormFile? ProfileImage { get; set; }
+        public string? ProfileImagePath { get; set; }
+
     }
 }

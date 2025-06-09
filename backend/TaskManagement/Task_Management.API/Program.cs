@@ -165,7 +165,6 @@ using (var scope = app.Services.CreateScope())
 
 
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -178,7 +177,7 @@ app.UseRouting();
 app.UseCors("AllowAngularApp"); 
 
 app.UseAuthentication();
-
+app.UseStaticFiles(); 
 app.Use(async (context, next) =>
 {
     await next();

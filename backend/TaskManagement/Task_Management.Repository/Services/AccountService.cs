@@ -34,6 +34,30 @@ namespace Task_Management.Repository.Services
 
         public async Task<IdentityResult> RegisterUserAsync(RegisterViewModel model)
         {
+            string profileImagePath = null;
+
+            if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+            {
+                // Define folder path (adjust as needed)
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                // Generate unique file name
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.ProfileImage.FileName);
+
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Save the file to server
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfileImage.CopyToAsync(fileStream);
+                }
+
+                // Store relative path to save in DB
+                profileImagePath = Path.Combine("uploads", "users", uniqueFileName).Replace("\\", "/");
+            }
+
             var user = new User
             {
                 UserName = model.UserName,
@@ -41,7 +65,8 @@ namespace Task_Management.Repository.Services
                 Name = model.Name,
                 Gender = model.Gender,
                 JoinDate = model.JoinDate,
-                Status = "Active"
+                Status = "Active",
+                ProfileImagePath = profileImagePath  // Save image path
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -63,6 +88,7 @@ namespace Task_Management.Repository.Services
 
             return result;
         }
+
 
 
         public async Task<string> LoginUserAsync(LoginViewModel model)

@@ -32,9 +32,9 @@ return this.http.post<any>(`${this.apiUrl}/GetPaginated`, request);
   }
 
 updateUser(id: number, user: any): Observable<{success: boolean, message?: string}> {
-  return this.http.put<{success: boolean, message?: string}>(
-    `${this.apiUrl}/Edit`, 
-    user, 
+  return this.http.post<{success: boolean, message?: string}>(
+    `${this.apiUrl}/EditStatus`,
+    user,
     { withCredentials: true }
   ).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -45,6 +45,7 @@ updateUser(id: number, user: any): Observable<{success: boolean, message?: strin
     })
   );
 }
+
 
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/Delete/${id}`, { withCredentials: true });

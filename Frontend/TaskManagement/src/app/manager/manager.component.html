@@ -87,44 +87,54 @@
   <div class="table-responsive">
     <table *ngIf="!isLoading" class="table table-bordered table-hover">
       <thead class="table-light">
-        <tr>
-          <th (click)="onSort('name')" style="cursor: pointer;">
-            Name {{ getSortIcon('name') }}
-          </th>
-          <th (click)="onSort('email')" style="cursor: pointer;">
-            Email {{ getSortIcon('email') }}
-          </th>
-          <th (click)="onSort('gender')" style="cursor: pointer;">
-            Gender {{ getSortIcon('gender') }}
-          </th>
-          <th (click)="onSort('joinDate')" style="cursor: pointer;">
-            Join Date {{ getSortIcon('joinDate') }}
-          </th>
-          <th (click)="onSort('status')" style="cursor: pointer;">
-            Status {{ getSortIcon('status') }}
-          </th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+  <tr>
+    <th>Image</th>
+    <th (click)="onSort('name')" style="cursor: pointer;">Name {{ getSortIcon('name') }}</th>
+    <th (click)="onSort('email')" style="cursor: pointer;">Email {{ getSortIcon('email') }}</th>
+    <th (click)="onSort('gender')" style="cursor: pointer;">Gender {{ getSortIcon('gender') }}</th>
+    <th (click)="onSort('joinDate')" style="cursor: pointer;">Join Date {{ getSortIcon('joinDate') }}</th>
+    <th (click)="onSort('status')" style="cursor: pointer;">Status {{ getSortIcon('status') }}</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
       <tbody>
-        <tr *ngFor="let manager of managers">
-          <td>{{ manager.name }}</td>
-          <td>{{ manager.email }}</td>
-          <td>{{ manager.gender }}</td>
-          <td>{{ manager.joinDate | date: 'yyyy-MM-dd' }}</td>
-          <td>
-            <span [class.badge]="true"
-                  [class.bg-success]="manager.status === 'Active'"
-                  [class.bg-warning]="manager.status === 'De-Active'">
-              {{ manager.status }}
-            </span>
-          </td>
-          <td>
-            <button class="btn btn-primary btn-sm me-1" (click)="openEditModal(manager)">Edit</button>
-            <button class="btn btn-danger btn-sm" (click)="openDeleteModal(manager)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
+  <tr *ngFor="let manager of managers">
+<td class="text-center align-middle">
+  <div class="d-flex justify-content-center align-items-center">
+    <img
+      *ngIf="manager.profileImagePath"
+      [src]="getImageUrl(manager.profileImagePath)"
+      alt="Manager Image"
+      class="rounded-circle shadow-sm border border-secondary object-fit-cover"
+      style="width: 50px; height: 50px;"
+    />
+    <span *ngIf="!manager.profileImagePath" class="text-muted fst-italic">No Image</span>
+  </div>
+</td>
+
+    <td>{{ manager.name }}</td>
+    <td>{{ manager.email }}</td>
+    <td>{{ manager.gender }}</td>
+    <td>{{ manager.joinDate | date: 'yyyy-MM-dd' }}</td>
+    <td>
+      <span
+        class="badge"
+        [ngClass]="{
+          'bg-success': manager.status === 'Active',
+          'bg-warning': manager.status === 'De-Active'
+        }"
+      >
+        {{ manager.status }}
+      </span>
+    </td>
+    <td>
+      <button class="btn btn-primary btn-sm me-1" (click)="openEditModal(manager)">Edit</button>
+      <button class="btn btn-danger btn-sm" (click)="openDeleteModal(manager)">Delete</button>
+    </td>
+  </tr>
+</tbody>
+
     </table>
   </div>
  
@@ -177,7 +187,6 @@
 </div>
  
 <!-- Add/Edit Manager Modal -->
-<!-- Update your modal form with validation messages -->
 <div *ngIf="selectedManager" class="modal d-block" style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -234,7 +243,11 @@
               <option value="De-Active">De-Active</option>
             </select>
           </div>
-         
+         <div class="mb-3">
+  <label for="image" class="form-label">Upload Image</label>
+  <input type="file" class="form-control" id="image" (change)="onImageSelected($event)">
+</div>
+
           <div *ngIf="!selectedManager.id">
             <div class="mb-3">
               <label class="form-label">Password</label>

@@ -59,6 +59,13 @@
                 <div class="invalid-feedback">Join date is required.</div>
               </div>
             </div>
+             <div class="mb-3">
+              <label class="form-label fw-semibold">Profile Image</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+              <div *ngIf="model.profileImage && imagePreview">
+                <img [src]="imagePreview" class="img-thumbnail" width="120" height="120" alt="Preview">
+              </div>
+            </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
