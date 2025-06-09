@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2 class="mb-4">User  Management</h2>
+  <h2>User Management</h2>
 
   <div class="row mb-4 g-3">
     <!-- Total Users Card -->
@@ -13,9 +13,7 @@
               <span *ngIf="isStatsLoading" class="spinner-border spinner-border-sm text-muted"></span>
             </h2>
           </div>
-          <div class="bg-light rounded-circle p-3">
-            <i class="bi bi-people-fill fs-1 text-primary"></i>
-          </div>
+          <i class="bi bi-people-fill fs-1 text-primary"></i>
         </div>
       </div>
     </div>
@@ -31,9 +29,7 @@
               <span *ngIf="isStatsLoading" class="spinner-border spinner-border-sm text-muted"></span>
             </h2>
           </div>
-          <div class="bg-light rounded-circle p-3">
-            <i class="bi bi-person-check-fill fs-1 text-success"></i>
-          </div>
+          <i class="bi bi-person-check-fill fs-1 text-success"></i>
         </div>
       </div>
     </div>
@@ -49,30 +45,28 @@
               <span *ngIf="isStatsLoading" class="spinner-border spinner-border-sm text-muted"></span>
             </h2>
           </div>
-          <div class="bg-light rounded-circle p-3">
-            <i class="bi bi-person-x-fill fs-1 text-warning"></i>
-          </div>
+          <i class="bi bi-person-x-fill fs-1 text-warning"></i>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Search and Filter Controls -->
   <div class="row mb-4 g-3">
     <div class="col-md-4">
-      <div class="input-group">
-        <input 
-          type="search" 
-          class="form-control" 
-          placeholder="Search by name..." 
-          [(ngModel)]="searchTerm" 
-          (input)="onSearch()" 
-          aria-label="Search users by name" 
-        />
-        <button class="btn btn-outline-secondary" type="button" (click)="onSearch()" aria-label="Search">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
+      
+           <div class="input-group">
+      <input 
+        type="search" 
+        class="form-control" 
+        placeholder="Search by name..." 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearch()" 
+        aria-label="Search users by name" 
+      />
+      <button class="btn btn-outline-secondary" type="button" (click)="onSearch()" aria-label="Search">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
     </div>
     
     <div class="col-md-3">
@@ -102,22 +96,17 @@
     </div>
   </div>
 
-  <!-- Loading and Error Messages -->
   <div *ngIf="isLoading" class="alert alert-info text-center">
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
     Loading users...
   </div>
   
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-    <button type="button" class="btn-close float-end" (click)="errorMessage = null"></button>
-  </div>
 
-  <!-- Users Table -->
   <div class="table-responsive">
     <table *ngIf="!isLoading" class="table table-bordered table-hover">
       <thead class="table-light">
         <tr>
+          <th>Image</th>
           <th (click)="onSort('name')" style="cursor: pointer;">
             Name {{ getSortIcon('name') }}
           </th>
@@ -134,7 +123,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of users" >
+           <td class="text-center">
+  <img [src]="getUserImage(user.imageUrl)" alt="Profile" width="70" height="70" class="rounded-circle">
+</td>
+
+
           <td>{{ user.name }}</td>
           <td>{{ user.gender }}</td>
           <td>
@@ -158,12 +152,10 @@
     </table>
   </div>
 
-  <!-- No Users Found Message -->
   <div *ngIf="!isLoading && users.length === 0" class="alert alert-warning text-center">
     No users found matching your criteria.
   </div>
 
-  <!-- Pagination -->
   <div *ngIf="totalPages > 1" class="row mt-3">
     <div class="col-md-6">
       <div class="text-muted">
@@ -208,8 +200,7 @@
   </div>
 </div>
 
-<!-- Edit User Modal -->
-<div class="modal fade show d-block" *ngIf="selectedUser  " tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+<div class="modal fade show d-block" *ngIf="selectedUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -217,15 +208,15 @@
         <button type="button" class="btn-close" (click)="closeModal()"></button>
       </div>
       <div class="modal-body">
-        <form #editForm="ngForm" (ngSubmit)="updateUser  ()">
+        <form #editForm="ngForm" (ngSubmit)="updateUser()">
           <div class="mb-3">
             <label class="form-label">Name</label>
-            <input class="form-control" [(ngModel)]="selectedUser  .name" name="name" disabled>
+            <input class="form-control" [(ngModel)]="selectedUser.name" name="name" disabled>
           </div>
           
           <div class="mb-3">
             <label class="form-label">Gender</label>
-            <select class="form-select" [(ngModel)]="selectedUser  .gender" name="gender" disabled>
+            <select class="form-select" [(ngModel)]="selectedUser.gender" name="gender" disabled>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
@@ -234,7 +225,7 @@
           
           <div class="mb-3">
             <label class="form-label">Status</label>
-            <select class="form-select" [(ngModel)]="selectedUser  .status" name="status" required>
+            <select class="form-select" [(ngModel)]="selectedUser.status" name="status" required>
               <option value="Active">Active</option>
               <option value="De-Active">De-Active</option>
             </select>
@@ -242,7 +233,7 @@
           
           <div class="mb-3">
             <label class="form-label">Join Date</label>
-            <input type="date" class="form-control" [(ngModel)]="selectedUser  .joinDate" name="joinDate" disabled>
+            <input type="date" class="form-control" [(ngModel)]="selectedUser.joinDate" name="joinDate" disabled>
           </div>
           
           <div class="modal-footer">
@@ -257,9 +248,17 @@
     </div>
   </div>
 </div>
+<div 
+  *ngIf="errorMessage" 
+  class="alert alert-danger alert-dismissible fade show fixed-top m-3 shadow" 
+  role="alert" 
+  style="z-index: 9999;"
+>
+  {{ errorMessage }}
+  <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade show d-block" *ngIf="deletingUser  " tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+<div class="modal fade show d-block" *ngIf="deletingUser" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
@@ -267,7 +266,7 @@
         <button type="button" class="btn-close btn-close-white" (click)="closeDeleteModal()"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete user <strong>{{ deletingUser  ?.name }}</strong>?</p>
+        <p>Are you sure you want to delete user <strong>{{ deletingUser?.name }}</strong>?</p>
         <p class="text-danger">This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
