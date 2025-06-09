@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+
 namespace Task_Management.Shared.DTOs
 {
     public class UserProfileViewModel
@@ -9,12 +11,17 @@ namespace Task_Management.Shared.DTOs
         public string Gender { get; set; }
         public DateTime JoinDate { get; set; }
         public string Status { get; set; }
+        
+
+
     }
 
     public class UpdateProfileViewModel
     {
         public string Name { get; set; }
         public string Gender { get; set; }
+        public IFormFile? ProfileImage { get; set; }
+
     }
 
     public class ChangePasswordViewModel

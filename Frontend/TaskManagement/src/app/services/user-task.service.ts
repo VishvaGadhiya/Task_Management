@@ -58,4 +58,8 @@ export class UserTaskService {
   getTasks(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/tasks`);
   }
+  
+  getStatusSummary(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/StatusSummary`);
+  }
 }

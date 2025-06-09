@@ -27,15 +27,23 @@ export class TaskComponent implements OnInit {
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  selectedTask: any = null;  // For Add/Edit modal
-  deletingTask: any = null;  // For Delete modal
+  selectedTask: any = null;  
+  deletingTask: any = null;  
   isSaving = false;
   isDeleting = false;
+  statusSummary = {
+    toDo: 0,
+    inProgress: 0,
+    completed: 0,
+  };
+  isStatusLoading = true;
 
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
     this.loadTasks();
+        this.loadStatusSummary();
+
   }
 
   loadTasks(): void {
@@ -62,7 +70,20 @@ export class TaskComponent implements OnInit {
       }
     });
   }
-
+ loadStatusSummary(): void {
+    this.isStatusLoading = true;
+    this.taskService.getStatusSummary().subscribe({
+      next: (data) => {
+        this.statusSummary.toDo = data.toDo ?? 0;
+        this.statusSummary.inProgress = data.inProgress ?? 0;
+        this.statusSummary.completed = data.completed ?? 0;
+        this.isStatusLoading = false;
+      },
+      error: () => {
+        this.isStatusLoading = false;
+      },
+    });
+  }
   onSearch(): void {
     this.currentPage = 1;
     this.loadTasks();

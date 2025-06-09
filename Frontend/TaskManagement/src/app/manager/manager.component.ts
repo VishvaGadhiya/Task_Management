@@ -37,6 +37,12 @@ export class ManagerComponent implements OnInit {
 
   formSubmitted = false;
   formErrors: any = {};
+    userStats = {
+    totalManager: 0,
+    activeManager: 0,
+    inactiveManager: 0
+  };
+  isStatsLoading = true;
 
   constructor(private managerService: ManagerService) {}
 
@@ -45,6 +51,8 @@ export class ManagerComponent implements OnInit {
     const yyyyMMdd = utcDate.toISOString().split('T')[0];
     this.today = yyyyMMdd;
     this.loadManagers();
+            this.loadStatistics(); 
+
   }
 
   loadManagers(): void {
@@ -70,7 +78,19 @@ export class ManagerComponent implements OnInit {
       }
     });
   }
-
+loadStatistics(): void {
+  this.managerService.getManagerStatistics().subscribe({
+    next: (stats) => {
+      this.userStats.totalManager = stats.totalData;
+      this.userStats.activeManager = stats.activeData;
+      this.userStats.inactiveManager = stats.inactiveData;
+      this.isStatsLoading = false;
+    },
+    error: () => {
+      this.isStatsLoading = false;
+    }
+  });
+}
   onSearch(): void {
     if (!this.searchTerm) {
       this.loadManagers();
@@ -237,6 +257,7 @@ export class ManagerComponent implements OnInit {
     this.previewImageUrl = null;
     this.formErrors = {};
     this.formSubmitted = false;
+    
   }
 
   saveNewManager(): void {

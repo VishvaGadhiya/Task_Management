@@ -5,6 +5,8 @@ namespace Task_Management.Interfaces.Interfaces
 {
     public interface ITaskService
     {
+        Task<DataStatusDto> GetTaskStatusSummaryAsync();
+
         Task<IEnumerable<Tasks>> GetAllTasksAsync();
         Task<PaginatedResult<CreateOrEditTaskDto>> GetTasksPaginatedAsync(TaskDataTableRequest request);
         Task<Tasks?> GetTaskByIdAsync(int id);

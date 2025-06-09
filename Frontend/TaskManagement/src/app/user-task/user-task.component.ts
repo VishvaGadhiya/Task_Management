@@ -25,6 +25,12 @@ export class UserTaskComponent implements OnInit {
   searchTerm = '';
   sortColumn = '';
   sortDirection = 'asc';
+   statusSummary = {
+    toDo: 0,
+    inProgress: 0,
+    completed: 0,
+  };
+  isStatusLoading = true;
 
   constructor(private userTaskService: UserTaskService) {}
 
@@ -32,6 +38,8 @@ export class UserTaskComponent implements OnInit {
     this.loadUsers();
     this.loadTasks();
     this.loadUserTasks();
+            this.loadStatusSummary();
+
   }
 
   loadUserTasks() {
@@ -42,7 +50,20 @@ export class UserTaskComponent implements OnInit {
         this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
       });
   }
-
+ loadStatusSummary(): void {
+    this.isStatusLoading = true;
+    this.userTaskService.getStatusSummary().subscribe({
+      next: (data) => {
+        this.statusSummary.toDo = data.toDo ?? 0;
+        this.statusSummary.inProgress = data.inProgress ?? 0;
+        this.statusSummary.completed = data.completed ?? 0;
+        this.isStatusLoading = false;
+      },
+      error: () => {
+        this.isStatusLoading = false;
+      },
+    });
+  }
   loadUsers() {
     this.userTaskService.getUsers().subscribe(data => {
       this.users = Array.isArray(data) ? data : Object.values(data);

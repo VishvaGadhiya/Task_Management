@@ -62,9 +62,12 @@ updateUser(id: number, user: any): Observable<{success: boolean, message?: strin
     return this.http.get<UserProfile>(`${this.accountApiUrl}/my-profile`);
   }
 
- updateProfile(profile: UserProfile): Observable<any> {
-    return this.http.put<any>(`${this.accountApiUrl}/update-profile`, profile);
-  }
+updateProfile(formData: FormData) {
+  return this.http.put(`${this.accountApiUrl}/update-profile`, formData, { withCredentials: true });
+}
+getUserStatistics(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/statistics`);
+}
 
   changePassword(data: any): Observable<void> {
     return this.http.post<void>(`${this.accountApiUrl}/change-password`, data);

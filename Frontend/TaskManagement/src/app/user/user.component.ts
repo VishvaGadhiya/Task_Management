@@ -33,11 +33,20 @@ export class UserComponent implements OnInit {
   isSaving = false;
   isDeleting = false;
 
+  userStats = {
+    totalUsers: 0,
+    activeUsers: 0,
+    inactiveUsers: 0
+  };
+  isStatsLoading = true;
+
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadUsers();
+        this.loadStatistics(); 
   }
+
 
   loadUsers(): void {
     this.isLoading = true;
@@ -64,6 +73,20 @@ export class UserComponent implements OnInit {
       }
     });
   }
+
+loadStatistics(): void {
+  this.userService.getUserStatistics().subscribe({
+    next: (stats) => {
+      this.userStats.totalUsers = stats.totalData;
+      this.userStats.activeUsers = stats.activeData;
+      this.userStats.inactiveUsers = stats.inactiveData;
+      this.isStatsLoading = false;
+    },
+    error: () => {
+      this.isStatsLoading = false;
+    }
+  });
+}
 
   onSearch(): void {
     this.currentPage = 1;

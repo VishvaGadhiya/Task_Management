@@ -91,38 +91,41 @@ namespace Task_Management.Repository.Services
 
 
 
-        public async Task<string> LoginUserAsync(LoginViewModel model)
-        {
-            var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-                return null;
+       public async Task<string> LoginUserAsync(LoginViewModel model)
+{
+    var user = await _userManager.FindByNameAsync(model.UserName);
+    if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+        return null;
 
-            if (!await _userManager.IsEmailConfirmedAsync(user) || user.Status != "Active")
-                return null;
+    if (!await _userManager.IsEmailConfirmedAsync(user) || user.Status != "Active")
+        return null;
 
-            var roles = await _userManager.GetRolesAsync(user);
+    var roles = await _userManager.GetRolesAsync(user);
 
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
+    var authClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        
+        new Claim("profileImageUrl", user.ProfileImagePath ?? string.Empty)
+    };
 
-            authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+    authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
+    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:Issuer"],
-                audience: _configuration["JwtSettings:Audience"],
-                expires: DateTime.UtcNow.AddHours(1),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
+    var token = new JwtSecurityToken(
+        issuer: _configuration["JwtSettings:Issuer"],
+        audience: _configuration["JwtSettings:Audience"],
+        expires: DateTime.UtcNow.AddHours(1),
+        claims: authClaims,
+        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+    );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
+
 
         public async Task<IdentityResult> ConfirmEmailAsync(string userId, string token)
         {
@@ -220,9 +223,35 @@ If the above link doesn't work, copy and paste this into your browser:<br/>
             user.Name = model.Name;
             user.Gender = model.Gender;
 
+            if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.ProfileImage.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfileImage.CopyToAsync(stream);
+                }
+
+                // Optional: delete old image if you want
+                if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                {
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfileImagePath.TrimStart('/'));
+                    if (File.Exists(oldPath))
+                        File.Delete(oldPath);
+                }
+
+                user.ProfileImagePath = $"/uploads/profiles/{fileName}";
+            }
+
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
+
 
         public async Task<IdentityResult> ChangePasswordAsync(string userId, ChangePasswordViewModel model)
         {

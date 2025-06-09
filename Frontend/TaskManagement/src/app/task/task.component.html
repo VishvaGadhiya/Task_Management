@@ -1,17 +1,74 @@
 <div class="container mt-4">
-  <h2>Task Management</h2>
+  <h2 class="mb-4">Task Management</h2>
+
+  <!-- Status Summary Cards -->
+  <div class="row mb-4 g-3">
+    <!-- To Do Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="card-title text-muted">To Do</h6>
+            <h2 class="mb-0 fw-bold">
+              <span *ngIf="!isStatusLoading">{{ statusSummary.toDo }}</span>
+              <span *ngIf="isStatusLoading" class="spinner-border spinner-border-sm text-muted"></span>
+            </h2>
+          </div>
+          <div class="bg-light rounded-circle p-3">
+            <i class="bi bi-list-check fs-1 text-primary"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="card-title text-muted">In Progress</h6>
+            <h2 class="mb-0 fw-bold">
+              <span *ngIf="!isStatusLoading">{{ statusSummary.inProgress }}</span>
+              <span *ngIf="isStatusLoading" class="spinner-border spinner-border-sm text-muted"></span>
+            </h2>
+          </div>
+          <div class="bg-light rounded-circle p-3">
+            <i class="bi bi-hourglass-split fs-1 text-warning"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="card-title text-muted">Completed</h6>
+            <h2 class="mb-0 fw-bold">
+              <span *ngIf="!isStatusLoading">{{ statusSummary.completed }}</span>
+              <span *ngIf="isStatusLoading" class="spinner-border spinner-border-sm text-muted"></span>
+            </h2>
+          </div>
+          <div class="bg-light rounded-circle p-3">
+            <i class="bi bi-check-circle fs-1 text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Search and Filter Controls -->
   <div class="row mb-4 g-3 align-items-center">
     <div class="col-md-5 d-flex">
       <input
-          type="search"
-          class="form-control"
-          placeholder="Search by title, description, etc..."
-          [(ngModel)]="searchTerm"
-          (input)="onSearch()"
-          aria-label="Search tasks by title, description, etc."
-        />
+        type="search"
+        class="form-control"
+        placeholder="Search by title, description, etc..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        aria-label="Search tasks by title, description, etc."
+      />
       <button
         class="btn btn-outline-secondary"
         type="button"
@@ -30,8 +87,8 @@
         aria-label="Filter tasks by status"
       >
         <option value="">All Statuses</option>
-        <option value="ToDo">ToDo</option>
-        <option value="InProgress">InProgress</option>
+        <option value="ToDo">To Do</option>
+        <option value="InProgress">In Progress</option>
         <option value="Completed">Completed</option>
       </select>
     </div>
@@ -66,11 +123,11 @@
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
     Loading tasks...
   </div>
-<!--   
+
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
     <button type="button" class="btn-close float-end" (click)="errorMessage = null"></button>
-  </div> -->
+  </div>
 
   <!-- Tasks Table -->
   <div class="table-responsive">
@@ -185,19 +242,18 @@
           </div>
           
           <div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" [(ngModel)]="selectedTask.description" name="description" required></textarea>
-<div *ngIf="editForm.submitted && !selectedTask.description" class="text-danger">
-  Description is required.
-</div>
-
-  </div>
+            <label class="form-label">Description</label>
+            <textarea class="form-control" [(ngModel)]="selectedTask.description" name="description" required></textarea>
+            <div *ngIf="editForm.submitted && !selectedTask.description" class="text-danger">
+              Description is required.
+            </div>
+          </div>
           
           <div class="mb-3">
             <label class="form-label">Status</label>
             <select class="form-select" [(ngModel)]="selectedTask.status" name="status" required>
-              <option value="ToDo">ToDo</option>
-              <option value="InProgress">InProgress</option>
+              <option value="ToDo">To Do</option>
+              <option value="InProgress">In Progress</option>
               <option value="Completed">Completed</option>
             </select>
             <div *ngIf="editForm.submitted && !selectedTask.status" class="text-danger">

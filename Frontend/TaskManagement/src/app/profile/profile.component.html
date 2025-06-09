@@ -1,6 +1,6 @@
 <div class="container mt-3">
   <h3>Update Profile</h3>
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="fullName" class="form-label">Full Name</label>
       <input id="fullName" formControlName="fullName" class="form-control" />
@@ -14,6 +14,11 @@
         <option value="Female">Female</option>
         <option value="Other">Other</option>
       </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="profileImage" class="form-label">Profile Image</label>
+      <input type="file" id="profileImage" class="form-control" (change)="onFileChange($event)" accept="image/*" />
     </div>
 
     <button type="submit" class="btn btn-primary" [disabled]="loading">

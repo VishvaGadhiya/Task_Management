@@ -18,6 +18,20 @@ namespace Task_Management.API.Controllers
             _managerService = managerService;
         }
 
+        [HttpGet("statistics")]
+        public async Task<ActionResult<DataStatisticsDto>> GetManagerStatistics()
+        {
+            try
+            {
+                var statistics = await _managerService.GetManagerStatisticsAsync();
+                return Ok(statistics);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while retrieving user statistics");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

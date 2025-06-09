@@ -52,6 +52,9 @@ export class TaskService {
     );
   }
 
+  getStatusSummary(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/StatusSummary`);
+  }
   private handleError(error: HttpErrorResponse) {
     console.error('TaskService error:', error);
     if (error.status === 401) {

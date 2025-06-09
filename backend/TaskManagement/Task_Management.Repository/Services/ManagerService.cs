@@ -21,6 +21,35 @@ namespace Task_Management.Repository.Services
             _userManager = userManager;
         }
 
+        public async Task<DataStatisticsDto> GetManagerStatisticsAsync()
+        {
+            var managerRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Manager");
+            if (managerRole == null)
+            {
+                return new DataStatisticsDto { TotalData = 0, ActiveData = 0, InactiveData = 0 };
+            }
+
+            var managerRoleId = managerRole.Id;
+
+            var managersQuery = from user in _context.Users
+                                join ur in _context.UserRoles on user.Id equals ur.UserId
+                                where ur.RoleId == managerRoleId
+                                select user;
+
+            var total = await managersQuery.CountAsync();
+
+            var active = await managersQuery.CountAsync(u => u.Status == "Active");
+
+            var inactive = await managersQuery.CountAsync(u => u.Status == "Inactive");
+
+            return new DataStatisticsDto
+            {
+                TotalData = total,
+                ActiveData = active,
+                InactiveData = inactive
+            };
+        }
+
         public async Task<IEnumerable<ManagerViewModel>> GetAllAsync()
         {
             var managers = await _userManager.GetUsersInRoleAsync("Manager");

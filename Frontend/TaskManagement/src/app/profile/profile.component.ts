@@ -44,24 +44,44 @@ loadUserProfile() {
   });
 }
 
+selectedFile!: File | null;
 
-  onSubmit() {
-    if (this.profileForm.invalid) return;
+onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input?.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+  }
+}
 
-    this.loading = true;
-    this.userService.updateProfile({
-  name: this.profileForm.value.fullName,
+ onSubmit() {
+  if (this.profileForm.invalid) return;
+
+  this.loading = true;
+
+  const formData = new FormData();
+  formData.append('name', this.profileForm.value.fullName);
+  formData.append('gender', this.profileForm.value.gender);
+  if (this.selectedFile) {
+    formData.append('profileImage', this.selectedFile);
+  }
+
+  this.userService.updateProfile(formData).subscribe({
+    next: () => {
+      this.success = 'Profile updated successfully!';
+      this.error = '';
+      this.loading = false;
+          this.loadUserProfile();
+
+    },
+    error: (error) => {
+      this.error = 'Failed to update profile: ' + (error.message || 'Unknown error');
+      this.success = '';
+      this.loading = false;
+      this.profileForm.patchValue({
+  fullName: this.profileForm.value.fullName,
   gender: this.profileForm.value.gender
-}).subscribe({
-  next: () => { 
-    this.success = 'Profile updated successfully!';
-    this.loading = false;
-  },
-  error: () => {
-    this.error = 'Failed to update profile.';
-    this.loading = false;
-  }
 });
-
-  }
+    }
+  });
+}
 }

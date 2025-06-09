@@ -17,7 +17,7 @@ namespace Task_Management.API.Controllers
         }
 
         [HttpPost("register")]
-        [DisableRequestSizeLimit] // optional: to control max upload size
+        [DisableRequestSizeLimit] 
         public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -127,10 +127,10 @@ namespace Task_Management.API.Controllers
         }
 
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileViewModel model)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileViewModel model)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -140,6 +140,7 @@ namespace Task_Management.API.Controllers
 
             return Ok(new { Message = "Profile updated successfully" });
         }
+
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
         {

@@ -21,6 +21,19 @@ namespace Task_Management.API.Controllers
         }
 
 
+        [HttpGet("statistics")]
+        public async Task<ActionResult<DataStatisticsDto>> GetUserStatistics()
+        {
+            try
+            {
+                var statistics = await _userService.GetUserStatisticsAsync();
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving user statistics");
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -105,7 +118,6 @@ namespace Task_Management.API.Controllers
             if (!result.Success)
                 return BadRequest(new { message = result.ErrorMessage });
 
-            // Return the updated user data
             var updatedUser = await _userService.GetUserByIdAsync(dto.Id);
             return Ok(new
             {

@@ -27,6 +27,13 @@ namespace Task_Management.API.Controllers
 
         }
 
+        [HttpGet("StatusSummary")]
+        public async Task<IActionResult> GetStatusSummary()
+        {
+            var summary = await _userTaskService.GetUserTaskStatusSummaryAsync();
+            return Ok(summary);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetUserTasks()
         {

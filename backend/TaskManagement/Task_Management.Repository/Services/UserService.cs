@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Task_Management.Interfaces.Interfaces;
 using Task_Management.Shared;
@@ -16,6 +17,19 @@ namespace Task_Management.Repository.Services
             _context = context;
         }
 
+        public async Task<DataStatisticsDto> GetUserStatisticsAsync()
+        {
+            var totalUsers = await _context.Users.CountAsync();
+            var activeUsers = await _context.Users.CountAsync(u => u.Status == "Active");
+            var inactiveUsers = await _context.Users.CountAsync(u => u.Status == "De-Active");
+
+            return new DataStatisticsDto
+            {
+                TotalData = totalUsers,
+                ActiveData = activeUsers,
+                InactiveData = inactiveUsers
+            };
+        }
         public async Task<List<User>> GetAllUsersAsync()
         {
             var userRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "User");

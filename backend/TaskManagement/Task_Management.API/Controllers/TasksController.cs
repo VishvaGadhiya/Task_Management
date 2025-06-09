@@ -19,6 +19,13 @@ namespace Task_Management.API.Controllers
             _taskService = taskService;
         }
 
+        [HttpGet("StatusSummary")]
+        public async Task<IActionResult> GetStatusSummary()
+        {
+            var summary = await _taskService.GetTaskStatusSummaryAsync();
+            return Ok(summary);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

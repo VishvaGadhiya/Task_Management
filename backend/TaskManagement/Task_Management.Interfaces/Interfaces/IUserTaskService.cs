@@ -5,6 +5,8 @@ namespace Task_Management.Interfaces.Interfaces
 {
     public interface IUserTaskService
     {
+        Task<DataStatusDto> GetUserTaskStatusSummaryAsync();
+
         Task<List<User>> GetAllUsersAsync();
         Task<IEnumerable<Tasks>> GetAllTasksAsync();
         Task<IEnumerable<UserTask>> GetAllAsync();

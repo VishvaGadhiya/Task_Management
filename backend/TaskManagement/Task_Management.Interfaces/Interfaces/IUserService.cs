@@ -5,6 +5,7 @@ namespace Task_Management.Interfaces.Interfaces
 {
     public interface IUserService
     {
+        Task<DataStatisticsDto> GetUserStatisticsAsync();
 
         Task<List<User>> GetAllUsersAsync();
         Task<PaginatedResult<User>> GetUsersPaginatedAsync(UserDataTableRequest request);

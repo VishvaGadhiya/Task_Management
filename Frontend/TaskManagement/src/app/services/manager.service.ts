@@ -56,7 +56,10 @@ updateManager(id: number, formData: FormData): Observable<any> {
       catchError(this.handleError)
     );
   }
- 
+ getManagerStatistics(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/statistics`);
+}
+
   private handleError(error: HttpErrorResponse) {
     console.error('ManagerService Error:', error);
     return throwError(() => new Error('Something went wrong; please try again later.'));

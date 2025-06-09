@@ -15,6 +15,20 @@ namespace Task_Management.Repository.Services
             _context = context;
         }
 
+        public async Task<DataStatusDto> GetTaskStatusSummaryAsync()
+        {
+            var tasks = await _context.Tasks.ToListAsync();
+
+            var summaryDto = new DataStatusDto
+            {
+                ToDo = tasks.Count(t => t.Status == "ToDo"),
+                InProgress = tasks.Count(t => t.Status == "InProgress"),
+                Completed = tasks.Count(t => t.Status == "Completed")
+            };
+
+            return summaryDto;
+        }
+
         public async Task<IEnumerable<Tasks>> GetAllTasksAsync()
         {
             return await _context.Tasks.ToListAsync();
