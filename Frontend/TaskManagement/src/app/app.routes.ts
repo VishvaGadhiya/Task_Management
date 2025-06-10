@@ -13,6 +13,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { ChangeEmailComponent } from './change-email/change-email.component';
 
 
 
@@ -30,6 +31,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'change-password', component: ChangePasswordComponent },
   { path: 'access-denied', component: AccessDeniedComponent },
+    { path: 'change-email', component: ChangeEmailComponent },
+
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

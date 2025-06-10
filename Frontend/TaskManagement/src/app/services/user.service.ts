@@ -68,7 +68,11 @@ updateProfile(formData: FormData) {
 getUserStatistics(): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/statistics`);
 }
-
+  changeEmail(data: { newEmail: string; password: string }): Observable<any> {
+    return this.http.post(`${this.accountApiUrl}/change-email`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
   changePassword(data: any): Observable<void> {
     return this.http.post<void>(`${this.accountApiUrl}/change-password`, data);
   }

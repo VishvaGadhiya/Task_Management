@@ -221,14 +221,20 @@
         </div>
        
         <div class="modal-body">
-          <div class="mb-3">
+         <div class="mb-3">
             <label class="form-label">Name</label>
             <input class="form-control" [(ngModel)]="selectedManager.name" name="name" required>
+            <div *ngIf="formSubmitted && formErrors.name" class="text-danger small mt-1">
+              {{ formErrors.name }}
+            </div>
           </div>
          
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" [(ngModel)]="selectedManager.email" name="email" required>
+            <div *ngIf="formSubmitted && formErrors.email" class="text-danger small mt-1">
+              {{ formErrors.email }}
+            </div>
           </div>
          
           <div class="mb-3">
@@ -242,7 +248,16 @@
          
           <div class="mb-3">
             <label class="form-label">Join Date</label>
-            <input type="date" class="form-control" [(ngModel)]="selectedManager.joinDate" name="joinDate" required>
+<input
+  type="date"
+  class="form-control"
+  [(ngModel)]="selectedManager.joinDate"
+  name="joinDate"
+  [readonly]="true"
+/>
+            <div *ngIf="formSubmitted && formErrors.joinDate" class="text-danger small mt-1">
+              {{ formErrors.joinDate }}
+            </div>
           </div>
          
           <div class="mb-3">
@@ -252,7 +267,7 @@
               <option value="De-Active">De-Active</option>
             </select>
           </div>
-
+         
           <div class="mb-3">
             <label for="image" class="form-label">Upload Image</label>
             <input type="file" class="form-control" id="image" (change)="onImageSelected($event)">
@@ -262,11 +277,17 @@
             <div class="mb-3">
               <label class="form-label">Password</label>
               <input type="password" class="form-control" [(ngModel)]="selectedManager.password" name="password" required>
+              <div *ngIf="formSubmitted && formErrors.password" class="text-danger small mt-1">
+                {{ formErrors.password }}
+              </div>
             </div>
            
             <div class="mb-3">
               <label class="form-label">Confirm Password</label>
               <input type="password" class="form-control" [(ngModel)]="selectedManager.confirmPassword" name="confirmPassword" required>
+              <div *ngIf="formSubmitted && formErrors.confirmPassword" class="text-danger small mt-1">
+                {{ formErrors.confirmPassword }}
+              </div>
             </div>
           </div>
          

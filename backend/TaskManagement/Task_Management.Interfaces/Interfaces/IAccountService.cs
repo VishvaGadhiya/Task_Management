@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Task_Management.Shared.DTOs;
 
 namespace Task_Management.Interfaces.Interfaces
@@ -15,6 +16,8 @@ namespace Task_Management.Interfaces.Interfaces
 
         Task<bool> UpdateUserProfileAsync(string userId, UpdateProfileViewModel model);
         Task<IdentityResult> ChangePasswordAsync(string userId, ChangePasswordViewModel model);
+        Task<(bool Succeeded, string? ConfirmationUrl, IEnumerable<string> Errors)> ChangeEmailAsync(string userId, ChangeEmailViewModel model, HttpRequest request);
+        Task<(bool Succeeded, IEnumerable<string> Errors)> ConfirmChangeEmailAsync(string userId, string newEmail, string token);
 
         Task LogoutUserAsync();
     }

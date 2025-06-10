@@ -163,6 +163,46 @@ namespace Task_Management.API.Controllers
             return Ok(new { Message = "Password changed successfully" });
         }
 
+        [HttpPost("change-email")]
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var result = await _accountService.ChangeEmailAsync(userId, model, Request);
+
+            if (!result.Succeeded)
+                return BadRequest(new { Message = "Failed to initiate email change", Errors = result.Errors });
+
+            // Normally you'd email the confirmation link. For testing:
+            return Ok(new
+            {
+                Message = "Confirmation link sent to your new email. Please confirm to complete the update.",
+                ConfirmationUrl = result.ConfirmationUrl // for debug/testing only
+            });
+        }
+        [HttpGet("confirm-change-email")]
+        public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(newEmail) || string.IsNullOrEmpty(token))
+                return BadRequest("Invalid confirmation link.");
+
+            var result = await _accountService.ConfirmChangeEmailAsync(userId, newEmail, token);
+
+            if (!result.Succeeded)
+                return BadRequest(new { Message = "Email change failed.", Errors = result.Errors });
+
+            if (result.Succeeded)
+            {
+                return Redirect("http://localhost:4200/login");
+            }
+
+            return BadRequest("Email confirmation failed.");
+        }
 
 
     }

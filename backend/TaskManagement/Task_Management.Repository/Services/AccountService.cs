@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -261,6 +262,44 @@ If the above link doesn't work, copy and paste this into your browser:<br/>
 
             var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             return result;
+        }
+
+        public async Task<(bool Succeeded, string? ConfirmationUrl, IEnumerable<string> Errors)> ChangeEmailAsync(string userId, ChangeEmailViewModel model, HttpRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return (false, null, new[] { "User not found" });
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!isPasswordValid)
+                return (false, null, new[] { "Incorrect password" });
+
+            var existing = await _userManager.FindByEmailAsync(model.NewEmail);
+            if (existing != null && existing.Id != user.Id)
+                return (false, null, new[] { "Email is already in use" });
+
+            var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
+            var confirmationUrl = $"{request.Scheme}://{request.Host}/api/account/confirm-change-email?userId={userId}&newEmail={model.NewEmail}&token={Uri.EscapeDataString(token)}";
+
+            var emailBody = $@"
+        <h4>Email Change Request</h4>
+        <p>You requested to change your email. Click the link below to confirm:</p>
+        <p><a href='{confirmationUrl}'>Confirm Email Change</a></p>";
+
+            await _emailSender.SendEmailAsync(model.NewEmail, "Confirm Your New Email", emailBody);
+
+            return (true, confirmationUrl, Enumerable.Empty<string>());
+        }
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> ConfirmChangeEmailAsync(string userId, string newEmail, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return (false, new[] { "User not found" });
+
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+            return result.Succeeded
+                ? (true, Enumerable.Empty<string>())
+                : (false, result.Errors.Select(e => e.Description));
         }
 
 

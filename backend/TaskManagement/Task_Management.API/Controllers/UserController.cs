@@ -29,11 +29,12 @@ namespace Task_Management.API.Controllers
                 var statistics = await _userService.GetUserStatisticsAsync();
                 return Ok(statistics);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "An error occurred while retrieving user statistics");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {

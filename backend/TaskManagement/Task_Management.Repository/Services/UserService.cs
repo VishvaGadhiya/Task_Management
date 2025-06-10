@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Task_Management.Interfaces.Interfaces;
@@ -11,17 +12,22 @@ namespace Task_Management.Repository.Services
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         public async Task<DataStatisticsDto> GetUserStatisticsAsync()
         {
-            var totalUsers = await _context.Users.CountAsync();
-            var activeUsers = await _context.Users.CountAsync(u => u.Status == "Active");
-            var inactiveUsers = await _context.Users.CountAsync(u => u.Status == "De-Active");
+            var employees = await _userManager.GetUsersInRoleAsync("User");
+
+            var totalUsers = employees.Count;
+            var activeUsers = employees.Count(u => u.Status == "Active");
+            var inactiveUsers = employees.Count(u => u.Status == "De-Active");
 
             return new DataStatisticsDto
             {
@@ -30,6 +36,7 @@ namespace Task_Management.Repository.Services
                 InactiveData = inactiveUsers
             };
         }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             var userRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "User");
