@@ -15,6 +15,8 @@ export class ProfileComponent implements OnInit {
   loading = false;
   error = '';
   success = '';
+  profileImagePreview: string | ArrayBuffer | null = null;
+
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +27,8 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.profileForm = this.fb.group({
       fullName: ['', Validators.required],
-      gender: ['', Validators.required]
+      gender: ['', Validators.required],
+        profileImage: [null]
     });
 
     this.loadUserProfile();
@@ -46,10 +49,15 @@ loadUserProfile() {
 
 selectedFile!: File | null;
 
-onFileChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input?.files && input.files.length > 0) {
-    this.selectedFile = input.files[0];
+onFileChange(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.profileImagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+    this.profileForm.patchValue({ profileImage: file });
   }
 }
 

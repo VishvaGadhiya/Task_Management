@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class RegisterService {
-  private baseUrl = 'https://localhost:7125/api/Account/register'; // Updated to point to the Register endpoint
+private baseUrl = `${environment.apiUrl}/Account/register`;
 
   constructor(private http: HttpClient) {}
 

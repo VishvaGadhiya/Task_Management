@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
 
 export interface UserTask {
   id?: number;
@@ -22,7 +23,7 @@ export interface UserTaskDataTableRequest {
   providedIn: 'root',
 })
 export class UserTaskService {
-  private apiUrl = 'https://localhost:7125/api/UserTasks';
+private apiUrl = `${environment.apiUrl}/UserTasks`;
 
   constructor(private http: HttpClient) {}
 

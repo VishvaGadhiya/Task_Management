@@ -5,13 +5,15 @@ import { catchError } from 'rxjs/operators';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import { ProfileComponent } from '../profile/profile.component';
 import { UserProfile } from '../models/Dtos/profile.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://localhost:7125/api/User';
-  private accountApiUrl = 'https://localhost:7125/api/Account';
+private apiUrl = `${environment.apiUrl}/User`;
+private accountApiUrl = `${environment.apiUrl}/Account`;
+
 
   constructor(private http: HttpClient) { }
 

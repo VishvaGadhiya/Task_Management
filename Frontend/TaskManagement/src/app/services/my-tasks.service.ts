@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Task {
   id: number;
@@ -22,7 +23,7 @@ interface TaskResponse {
   providedIn: 'root'
 })
 export class MyTasksService {
-  private baseUrl = 'https://localhost:7125/api/MyTasks';
+  private baseUrl = `${environment.apiUrl}/MyTasks`;  
 
   constructor(private http: HttpClient) { }
 

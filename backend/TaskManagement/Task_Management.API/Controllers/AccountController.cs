@@ -178,11 +178,10 @@ namespace Task_Management.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(new { Message = "Failed to initiate email change", Errors = result.Errors });
 
-            // Normally you'd email the confirmation link. For testing:
             return Ok(new
             {
                 Message = "Confirmation link sent to your new email. Please confirm to complete the update.",
-                ConfirmationUrl = result.ConfirmationUrl // for debug/testing only
+                ConfirmationUrl = result.ConfirmationUrl 
             });
         }
         [HttpGet("confirm-change-email")]

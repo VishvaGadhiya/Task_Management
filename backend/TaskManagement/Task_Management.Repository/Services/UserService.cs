@@ -18,7 +18,6 @@ namespace Task_Management.Repository.Services
         {
             _context = context;
             _userManager = userManager;
-
         }
 
         public async Task<DataStatisticsDto> GetUserStatisticsAsync()

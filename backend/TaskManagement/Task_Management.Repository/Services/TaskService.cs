@@ -16,7 +16,7 @@ namespace Task_Management.Repository.Services
         }
 
         public async Task<DataStatusDto> GetTaskStatusSummaryAsync()
-        {
+        {   
             var tasks = await _context.Tasks.ToListAsync();
 
             var summaryDto = new DataStatusDto
